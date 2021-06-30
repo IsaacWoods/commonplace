@@ -3,3 +3,5 @@
 !/.yarn/plugins
 !/.yarn/sdks
 !/.yarn/cache
+
+/dist/
