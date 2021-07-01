@@ -2,6 +2,7 @@ import { createGlobalStyle } from 'styled-components';
 
 export const theme = {
     sidebarWidth: 240,
+    sidebarColor: "rgba(247, 246, 243)",
 };
 
 export const GlobalStyle = createGlobalStyle`

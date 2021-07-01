@@ -10,14 +10,13 @@ export default function Sidebar() {
     );
 }
 
-// TODO: colors and width from theme
 const Container = styled(Flex)`
     position: fixed;
     top: 0;
     bottom: 0;
     width: ${props => props.theme.sidebarWidth}px;
     height: auto;
-    background: #333333;
+    background: ${props => props.theme.sidebarColor};
     z-index: 10;
     margin: 0;
 `;

@@ -31,7 +31,6 @@ export default function Scene(props: Props) {
     );
 }
 
-// TODO: get colors from theme
 const Container = styled(Flex)`
     background: #ffffff;
     position: relative;
@@ -39,7 +38,6 @@ const Container = styled(Flex)`
     min-height: 100%;
 `;
 
-// TODO: from theme
 const Content = styled(Flex)`
     margin-left: ${props => props.theme.sidebarWidth}px;
 `;
