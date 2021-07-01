@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Helmet } from 'react-helmet';
 import Flex from './flex';
 import Sidebar from './sidebar';
+import CenteredContent from './centered';
 
 type Props = {
     children?: React.ReactNode,
@@ -20,7 +21,9 @@ export default function Scene(props: Props) {
                 <Sidebar />
                 <Content auto justify="center">
                     <Fullwidth>
-                        {props.children}
+                        <CenteredContent>
+                            {props.children}
+                        </CenteredContent>
                     </Fullwidth>
                 </Content>
             </Container>
