@@ -745,10 +745,12 @@ __metadata:
   dependencies:
     "@types/react": ^17.0.11
     "@types/react-dom": ^17.0.8
+    "@types/react-helmet": ^6.1.1
     "@types/styled-components": ^5.1.10
     html-webpack-plugin: ^5.3.2
     react: ^17.0.2
     react-dom: ^17.0.2
+    react-helmet: ^6.1.0
     react-is: ^17.0.2
     styled-components: ^5.3.0
     ts-loader: ^9.2.3
@@ -1583,6 +1585,20 @@ __metadata:
   version: 3.2.0
   resolution: "react-fast-compare@npm:3.2.0"
   checksum: 6fe65c889eb4f326e97769135f97b3d63ac68737866f9c37f9625c9de4f5eaa9abed6f748eb3fd6a66808392118842916309cab7cfa99c67991f0c837433d6d2
+  languageName: node
+  linkType: hard
+
+"react-helmet@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "react-helmet@npm:6.1.0"
+  dependencies:
+    object-assign: ^4.1.1
+    prop-types: ^15.7.2
+    react-fast-compare: ^3.1.1
+    react-side-effect: ^2.1.0
+  peerDependencies:
+    react: ">=16.3.0"
+  checksum: 56fd795b0aecc89bac8d2733268751f0ef463bf6764090f8a801778741d4a6eaf135234cdaa50188bbda29c8e2d3ec43e9a42d1ec06b60092645c8754c7bad81
   languageName: node
   linkType: hard
 
