@@ -38,7 +38,7 @@ const Container = styled(Flex)`
 
 // TODO: from theme
 const Content = styled(Flex)`
-    margin-left: 240px;
+    margin-left: ${props => props.theme.sidebarWidth}px;
 `;
 
 const Fullwidth = styled.div`

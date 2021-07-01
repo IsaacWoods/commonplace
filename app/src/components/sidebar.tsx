@@ -15,7 +15,7 @@ const Container = styled(Flex)`
     position: fixed;
     top: 0;
     bottom: 0;
-    width: 240px;
+    width: ${props => props.theme.sidebarWidth}px;
     height: auto;
     background: #333333;
     z-index: 10;

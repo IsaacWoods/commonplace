@@ -1,11 +1,11 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { GlobalStyle } from './theme';
-import { ThemeProvider } from 'styled-components';
+import { GlobalStyle, theme } from './theme';
+import { ThemeProvider} from 'styled-components';
 import Scene from './components/scene';
 
 const App = () =>
-    <ThemeProvider theme={{}}>
+    <ThemeProvider theme={theme}>
         <GlobalStyle />
         <Scene>
             <h1>Hello, React!</h1>
