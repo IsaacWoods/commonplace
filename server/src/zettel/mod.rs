@@ -1,4 +1,5 @@
 use chrono::{Datelike, Timelike, Utc};
+use rocket::{post, serde::json::Json, State};
 use serde::{Deserialize, Serialize};
 
 /// Each Zettel is associated with a unique ID, which is based on a timestamp of when the Zettel was created,
@@ -7,7 +8,7 @@ use serde::{Deserialize, Serialize};
 /// allows a Zettel to be created every second, which I think will be okay for real-world purposes.
 ///
 /// The time in the timestamp is UTC+0, and the date uses the Holocene calendar.
-#[derive(Clone, PartialEq, Eq, Debug)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[repr(transparent)]
 pub struct ZettelId(pub u64);
 
@@ -56,6 +57,7 @@ impl ZettelStore {
     }
 
     pub fn create(&self) -> ZettelId {
+        // TODO: detect duplicate IDs being generated properly
         let id = ZettelId::generate();
         self.tree
             .compare_and_swap(
@@ -68,4 +70,9 @@ impl ZettelStore {
         id
     }
 }
+
+#[post("/zettel.create")]
+pub fn create(store: &State<ZettelStore>) -> Result<Json<ZettelId>, ()> {
+    let id = store.create();
+    Ok(Json(id))
 }
