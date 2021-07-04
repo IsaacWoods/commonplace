@@ -1,3 +1,5 @@
+mod zettel;
+
 use rocket::{fs::FileServer, get, launch, routes};
 
 #[launch]
