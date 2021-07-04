@@ -1,5 +1,5 @@
 use chrono::{Datelike, Timelike, Utc};
-use rocket::{post, serde::json::Json, State};
+use rocket::{get, http::Status, post, serde::json::Json, State};
 use serde::{Deserialize, Serialize};
 
 /// Each Zettel is associated with a unique ID, which is based on a timestamp of when the Zettel was created,
@@ -69,10 +69,22 @@ impl ZettelStore {
             .expect("Failed to create Zettel!");
         id
     }
+
+    pub fn get(&self, id: ZettelId) -> Option<Zettel> {
+        self.tree.get(id.encode()).unwrap().map(|bytes| serde_cbor::from_slice(&bytes).unwrap())
+    }
 }
 
 #[post("/zettel.create")]
 pub fn create(store: &State<ZettelStore>) -> Result<Json<ZettelId>, ()> {
     let id = store.create();
     Ok(Json(id))
+}
+
+#[get("/zettel.fetch/<id>")]
+pub fn fetch(store: &State<ZettelStore>, id: u64) -> Result<Json<Zettel>, Status> {
+    match store.get(ZettelId(id)) {
+        Some(zettel) => Ok(Json(zettel)),
+        None => Err(Status::NotFound),
+    }
 }
