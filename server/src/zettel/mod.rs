@@ -1,6 +1,11 @@
 use chrono::{Datelike, Timelike, Utc};
 use rocket::{get, http::Status, post, serde::json::Json, State};
 use serde::{Deserialize, Serialize};
+use sled::IVec;
+use std::{
+    convert::{TryFrom, TryInto},
+    ops::Deref,
+};
 
 /// Each Zettel is associated with a unique ID, which is based on a timestamp of when the Zettel was created,
 /// turned into a single number, but retaining most of its human-readability. For example, a Zettel created when
@@ -41,8 +46,23 @@ impl ZettelId {
     }
 }
 
+impl TryFrom<IVec> for ZettelId {
+    type Error = ();
+
+    fn try_from(bytes: IVec) -> Result<ZettelId, Self::Error> {
+        Ok(ZettelId(u64::from_be_bytes(bytes.deref().try_into().map_err(|_| ())?)))
+    }
+}
+
 #[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct Zettel {
+    pub title: String,
+    pub content: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct QueryResult {
+    pub id: ZettelId,
     pub title: String,
     pub content: String,
 }
@@ -73,6 +93,22 @@ impl ZettelStore {
     pub fn get(&self, id: ZettelId) -> Option<Zettel> {
         self.tree.get(id.encode()).unwrap().map(|bytes| serde_cbor::from_slice(&bytes).unwrap())
     }
+
+    pub fn all(&self) -> Vec<QueryResult> {
+        self.tree
+            .iter()
+            .filter_map(|entry| {
+                if let Ok((key, value)) = entry {
+                    let id = ZettelId::try_from(key).unwrap();
+                    let zettel = serde_cbor::from_slice::<Zettel>(&value).unwrap();
+                    Some(QueryResult { id, title: zettel.title, content: zettel.content })
+                } else {
+                    println!("Weird entry when iterating Zettels: {:?}", entry);
+                    None
+                }
+            })
+            .collect()
+    }
 }
 
 #[post("/zettel.create")]
@@ -82,9 +118,14 @@ pub fn create(store: &State<ZettelStore>) -> Result<Json<ZettelId>, ()> {
 }
 
 #[get("/zettel.fetch/<id>")]
-pub fn fetch(store: &State<ZettelStore>, id: u64) -> Result<Json<Zettel>, Status> {
+pub fn fetch(id: u64, store: &State<ZettelStore>) -> Result<Json<Zettel>, Status> {
     match store.get(ZettelId(id)) {
         Some(zettel) => Ok(Json(zettel)),
         None => Err(Status::NotFound),
     }
+}
+
+#[get("/zettel.query?<query>")]
+pub fn query(query: Option<String>, store: &State<ZettelStore>) -> Result<Json<Vec<QueryResult>>, Status> {
+    Ok(Json(store.all()))
 }
