@@ -1,4 +1,5 @@
 use chrono::{Datelike, Timelike, Utc};
+use serde::{Deserialize, Serialize};
 
 /// Each Zettel is associated with a unique ID, which is based on a timestamp of when the Zettel was created,
 /// turned into a single number, but retaining most of its human-readability. For example, a Zettel created when
@@ -29,4 +30,42 @@ impl ZettelId {
                 + second,
         )
     }
+
+    pub fn encode(&self) -> [u8; 8] {
+        /*
+         * NOTE: when we encode Zettel IDs to be used as keys in the `sled` database, we do so in big-endian. This
+         * is because `sled` sorts byte-by-byte, so this correctly lexicographically sorts Zettels by ID.
+         */
+        self.0.to_be_bytes()
+    }
+}
+
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
+pub struct Zettel {
+    pub title: String,
+    pub content: String,
+}
+
+pub struct ZettelStore {
+    pub tree: sled::Tree,
+}
+
+impl ZettelStore {
+    pub fn new() -> ZettelStore {
+        ZettelStore { tree: sled::open("db").unwrap().open_tree("zettels").unwrap() }
+    }
+
+    pub fn create(&self) -> ZettelId {
+        let id = ZettelId::generate();
+        self.tree
+            .compare_and_swap(
+                &id.encode(),
+                None: Option<&[u8]>,
+                Some(serde_cbor::to_vec(&Zettel::default()).unwrap()),
+            )
+            .unwrap()
+            .expect("Failed to create Zettel!");
+        id
+    }
+}
 }
