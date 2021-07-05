@@ -6,7 +6,8 @@ import Header from '../components/header';
 import CenteredContent from '../components/centered';
 import Flex from '../components/flex';
 import TextareaAutosize from 'react-autosize-textarea';
-import Editor from '../editor';
+import EditorProvider from '../editor';
+import EditorView from '../editor/view';
 
 function ZettelEditor(props: { id: number }) {
     return (
@@ -15,7 +16,9 @@ function ZettelEditor(props: { id: number }) {
             <CenteredContent>
                 <Flex auto column>
                     <Title placeholder="Add a title..." />
-                    <Editor />
+                    <EditorProvider>
+                        <EditorView />
+                    </EditorProvider>
                 </Flex>
             </CenteredContent>
         </>
@@ -32,24 +35,24 @@ export default function Zettel() {
 }
 
 const Title = styled(TextareaAutosize)`
-  outline: none;
-  border: 0;
-  resize: none;
-  padding: 0;
-  margin-top: 1em;
-  margin-bottom: 0.5em;
+    outline: none;
+    border: 0;
+    resize: none;
+    padding: 0;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
 
-  font-size: 2.25em;
-  font-weight: 500;
-  line-height: 1.25;
+    font-size: 2.25em;
+    font-weight: 500;
+    line-height: 1.25;
 
-  background: ${(props) => props.theme.background};
-  transition: background 100ms ease-in-out;
-  color: ${(props) => props.theme.text};
-  -webkit-text-fill-color: ${(props) => props.theme.text};
+    background: ${(props) => props.theme.background};
+    transition: background 100ms ease-in-out;
+    color: ${(props) => props.theme.text};
+    -webkit-text-fill-color: ${(props) => props.theme.text};
 
-  &::placeholder {
-    color: ${(props) => props.theme.placeholder};
-    -webkit-text-fill-color: ${(props) => props.theme.placeholder};
-  }
+    &::placeholder {
+        color: ${(props) => props.theme.placeholder};
+        -webkit-text-fill-color: ${(props) => props.theme.placeholder};
+    }
 `;
