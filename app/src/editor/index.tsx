@@ -4,6 +4,8 @@ import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { Schema } from 'prosemirror-model';
 import Functionalities from './functionality';
+import type { ZettelContent } from '../zettel';
+import parseZettel from './parser';
 
 import Doc from './nodes/doc';
 import Text from './nodes/text';
@@ -16,6 +18,11 @@ type Editor = {
 
 const EditorContext = React.createContext<Editor | null>(null);
 
+type ProviderProps = {
+    children?: React.ReactNode,
+    content: ZettelContent,
+}
+
 /*
  * An `EditorProvider` manages and provides the Prosemirror state and view to child components using React context.
  * This allows us to idiomatically separate the editor's UI into React components, while accessing the Prosemirror
@@ -23,7 +30,7 @@ const EditorContext = React.createContext<Editor | null>(null);
  *
  * The actual Prosemirror DOM is rendered by `EditorView`.
  */
-export default function EditorProvider(props: { children: React.ReactNode }) {
+export default function EditorProvider(props: ProviderProps) {
     const [functionalities] = React.useState(() => {
         return new Functionalities([
             new Doc(),
@@ -36,6 +43,7 @@ export default function EditorProvider(props: { children: React.ReactNode }) {
 
     const [state, setState] = React.useState(() => {
         return EditorState.create({
+            doc: parseZettel(schema, props.content),
             schema,
             plugins: functionalities.plugins(schema),
         });

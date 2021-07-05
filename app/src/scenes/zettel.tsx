@@ -29,7 +29,7 @@ function ZettelEditor(props: { id: number }) {
                     <Flex auto column>
                         <Title defaultValue={zettel.title} placeholder="Add a title..." />
                         { /* TODO: pass Zettel contents into Prosemirror somehow */ }
-                        <EditorProvider>
+                        <EditorProvider content={zettel.content}>
                             <EditorView />
                         </EditorProvider>
                     </Flex>
