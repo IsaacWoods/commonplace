@@ -88,4 +88,22 @@ export default class Functionalities {
             .reduce((allCommands, commands) => ({ ...allCommands, ...commands }), {});
     }
 }
+
+export function markInputRule(pattern: RegExp, markType: MarkType, getAttrs?: (match) => Record<string, unknown>): InputRule {
+    return new InputRule(pattern, (state, match, start, end) => {
+        const attrs = getAttrs instanceof Function ? getAttrs(match) : getAttrs;
+        const { tr } = state;
+
+        if (match[1]) {
+            const textStart = start + match[0].indexOf(match[1]);
+            const textEnd = textStart + match[1].length;
+            if (textEnd < end) tr.delete(textEnd, end);
+            if (textStart > start) tr.delete(start, textStart);
+            end = start + match[1].length;
+        }
+
+        tr.addMark(start, end, markType.create(attrs));
+        tr.removeStoredMark(markType);
+        return tr;
+    });
 }

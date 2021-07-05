@@ -11,6 +11,8 @@ import Doc from './nodes/doc';
 import Text from './nodes/text';
 import Paragraph from './nodes/paragraph';
 
+import Bold from './marks/bold';
+
 type Editor = {
     state: EditorState,
     view: EditorView,
@@ -33,9 +35,17 @@ type ProviderProps = {
 export default function EditorProvider(props: ProviderProps) {
     const [functionalities] = React.useState(() => {
         return new Functionalities([
+            /*
+             * Nodes
+             */
             new Doc(),
             new Text(),
             new Paragraph(),
+
+            /*
+             * Marks
+             */
+             new Bold(),
         ]);
     });
 
