@@ -108,7 +108,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.1":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.14.0":
   version: 7.14.6
   resolution: "@babel/runtime@npm:7.14.6"
   dependencies:
@@ -247,6 +247,13 @@ __metadata:
   version: 7.0.7
   resolution: "@types/json-schema@npm:7.0.7"
   checksum: b9d2c509fa4e0b82f58e73f5e6ab76c60ff1884ba41bb82f37fb1cece226d4a3e5a62fedf78a43da0005373a6713d9abe61c1e592906402c41c08ad6ab26d52b
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4.14.170":
+  version: 4.14.170
+  resolution: "@types/lodash@npm:4.14.170"
+  checksum: 5ecc968649e764e3204435ba5125a3645e5e83963069a26b9307791698bf47ed9c2bd0f97488d9537eb4753d4bae596e5fa6187437a5b04bf47aba78fa553d50
   languageName: node
   linkType: hard
 
@@ -780,12 +787,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "commonplace@workspace:."
   dependencies:
+    "@types/lodash": ^4.14.170
     "@types/react": ^17.0.11
     "@types/react-dom": ^17.0.8
     "@types/react-helmet": ^6.1.1
     "@types/react-router-dom": ^5.1.7
     "@types/styled-components": ^5.1.10
     html-webpack-plugin: ^5.3.2
+    lodash: ^4.17.21
+    polished: ^4.1.3
     react: ^17.0.2
     react-dom: ^17.0.2
     react-helmet: ^6.1.0
@@ -1603,6 +1613,15 @@ __metadata:
   dependencies:
     find-up: ^4.0.0
   checksum: 1956ebf3cf5cc36a5d20e93851fcadd5a786774eb08667078561e72e0ab8ace91fc36a028d5305f0bfe7c89f9bf51886e2a3c8cb2c2620accfa3feb8da3c256b
+  languageName: node
+  linkType: hard
+
+"polished@npm:^4.1.3":
+  version: 4.1.3
+  resolution: "polished@npm:4.1.3"
+  dependencies:
+    "@babel/runtime": ^7.14.0
+  checksum: 1ba2b0a8d7ca9e229359abf3a743eabe861b2b17ea69b088de5b0905d78401ac2b258371804208af5b412818a6d5ee28359ef6c79cd054245c159fe6c756a85c
   languageName: node
   linkType: hard
 

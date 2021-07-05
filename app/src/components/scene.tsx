@@ -21,9 +21,7 @@ export default function Scene(props: Props) {
                 <Sidebar />
                 <Content auto justify="center">
                     <Fullwidth>
-                        <CenteredContent>
-                            {props.children}
-                        </CenteredContent>
+                        {props.children}
                     </Fullwidth>
                 </Content>
             </Container>
