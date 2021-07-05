@@ -1,4 +1,7 @@
+mod content;
+
 use chrono::{Datelike, Timelike, Utc};
+use content::Block;
 use rocket::{get, http::Status, post, serde::json::Json, State};
 use serde::{Deserialize, Serialize};
 use sled::IVec;
@@ -57,20 +60,20 @@ impl TryFrom<IVec> for ZettelId {
 #[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct Zettel {
     pub title: String,
-    pub content: String,
+    pub content: Vec<Block>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct QueryResult {
     pub id: ZettelId,
     pub title: String,
-    pub content: String,
+    pub content: Vec<Block>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ZettelUpdate {
     pub title: Option<String>,
-    pub content: Option<String>,
+    pub content: Option<Vec<Block>>,
 }
 
 pub struct ZettelStore {

@@ -1,6 +1,32 @@
 export type Zettel = {
     title: string,
-    content: string,
+    content: ZettelContent,
+}
+
+export type ZettelContent = Block[];
+
+export type Block = {
+    type: "Paragraph" | "Heading" | "Divider" | "List",
+    inlines?: Inline[],
+    items?: ListItem[],
+    level?: number,
+}
+
+export type Inline = {
+    type: "Text",
+    text?: string,
+    marks?: Mark[],
+}
+
+export type ListItem = {
+    blocks: Block[],
+}
+
+export type MarkType = "Bold" | "Italic" | "Strikethrough" | "Highlight" | "Link";
+
+export type Mark = {
+    type: MarkType,
+    href?: string,
 }
 
 export async function create_zettel(): Promise<number> {
