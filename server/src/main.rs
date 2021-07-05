@@ -38,7 +38,7 @@ impl Into<Vec<Route>> for AppPage {
 
 #[rocket::async_trait]
 impl Handler for AppPage {
-    async fn handle<'r>(&self, request: &'r Request<'_>, data: Data<'r>) -> Outcome<'r> {
+    async fn handle<'r>(&self, request: &'r Request<'_>, _data: Data<'r>) -> Outcome<'r> {
         Outcome::from(request, NamedFile::open(&self.0).await.ok())
     }
 }
