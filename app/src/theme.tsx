@@ -4,6 +4,7 @@ import normalizeStyle from 'styled-normalize';
 export const theme = {
     background: "#ffffff",
     text: "#141419",
+    placeholder: "#a2b2b4",
 
     sidebarWidth: 240,
     sidebarColor: "rgba(247, 246, 243)",

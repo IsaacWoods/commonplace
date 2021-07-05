@@ -592,6 +592,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"autosize@npm:^4.0.2":
+  version: 4.0.4
+  resolution: "autosize@npm:4.0.4"
+  checksum: 5213c8e212eb669780a229b1bf64bdc6d7744eea42df7f7e1149b8e27f12ac2782d93eed4aa7c9e6dc738f73df73e81e2b07fe9415a8252eb4551fd086c0d16e
+  languageName: node
+  linkType: hard
+
 "babel-plugin-styled-components@npm:>= 1.12.0":
   version: 1.13.1
   resolution: "babel-plugin-styled-components@npm:1.13.1"
@@ -797,6 +804,7 @@ __metadata:
     lodash: ^4.17.21
     polished: ^4.1.3
     react: ^17.0.2
+    react-autosize-textarea: ^7.1.0
     react-dom: ^17.0.2
     react-helmet: ^6.1.0
     react-is: ^17.0.2
@@ -809,6 +817,13 @@ __metadata:
     webpack-cli: ^4.7.2
   languageName: unknown
   linkType: soft
+
+"computed-style@npm:~0.1.3":
+  version: 0.1.4
+  resolution: "computed-style@npm:0.1.4"
+  checksum: 634ce1a7d612604b2b86eea0145addaaa44c0cdecb0378d988c3d6584566e2b6ce117b775022f404077406ec2edd7e5c81825c5a84aae2e6aa2dbe143e9ccaab
+  languageName: node
+  linkType: hard
 
 "cross-spawn@npm:^7.0.3":
   version: 7.0.3
@@ -1347,6 +1362,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"line-height@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "line-height@npm:0.3.1"
+  dependencies:
+    computed-style: ~0.1.3
+  checksum: aa6f1fa01d07391cc0a6c1f864713dd0ac5fd8ac3cde37f915c6796f5682835ed4e0c24589c3026775a16bd49778545472f24988c7ad5cdca45a3ce0081e5016
+  languageName: node
+  linkType: hard
+
 "loader-runner@npm:^4.2.0":
   version: 4.2.0
   resolution: "loader-runner@npm:4.2.0"
@@ -1643,7 +1667,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
+"prop-types@npm:^15.5.6, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
   version: 15.7.2
   resolution: "prop-types@npm:15.7.2"
   dependencies:
@@ -1667,6 +1691,20 @@ __metadata:
   dependencies:
     safe-buffer: ^5.1.0
   checksum: ede2693af09732ceab1c273dd70db787f34a7b8d95bab13f1aca763483c0113452a78e53d61ff18d393dcea586d388e01f198a5132a4a85cebba31ec54164b75
+  languageName: node
+  linkType: hard
+
+"react-autosize-textarea@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "react-autosize-textarea@npm:7.1.0"
+  dependencies:
+    autosize: ^4.0.2
+    line-height: ^0.3.1
+    prop-types: ^15.5.6
+  peerDependencies:
+    react: ^0.14.0 || ^15.0.0 || ^16.0.0
+    react-dom: ^0.14.0 || ^15.0.0 || ^16.0.0
+  checksum: ea73a1ea78f5274e9aee74f4c88c8ca905ad0142c4075465c46d0b1eea8863f32522efc39905eba2991c35557d8e62c687f9c9cb6ba903bdea207c8a6a967f82
   languageName: node
   linkType: hard
 
