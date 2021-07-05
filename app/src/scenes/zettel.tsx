@@ -8,18 +8,32 @@ import Flex from '../components/flex';
 import TextareaAutosize from 'react-autosize-textarea';
 import EditorProvider from '../editor';
 import EditorView from '../editor/view';
+import { fetch_zettel } from '../zettel';
 
 function ZettelEditor(props: { id: number }) {
+    const [zettel, setZettel] = React.useState(null);
+
+    React.useEffect(() => {
+        fetch_zettel(props.id).then((result) => {
+            setZettel(result);
+        }).catch((error) => {
+            console.log("Error: ", error);
+        });
+    }, [props.id]);
+
     return (
         <>
-            <Header title={`Zettel ${props.id}`} />
+            <Header title={zettel ? zettel.title : "Loading Zettel..."} />
             <CenteredContent>
-                <Flex auto column>
-                    <Title placeholder="Add a title..." />
-                    <EditorProvider>
-                        <EditorView />
-                    </EditorProvider>
-                </Flex>
+                { zettel ?
+                    <Flex auto column>
+                        <Title defaultValue={zettel.title} placeholder="Add a title..." />
+                        { /* TODO: pass Zettel contents into Prosemirror somehow */ }
+                        <EditorProvider>
+                            <EditorView />
+                        </EditorProvider>
+                    </Flex>
+                : <></>}
             </CenteredContent>
         </>
     );
