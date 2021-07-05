@@ -67,6 +67,12 @@ pub struct QueryResult {
     pub content: String,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ZettelUpdate {
+    pub title: Option<String>,
+    pub content: Option<String>,
+}
+
 pub struct ZettelStore {
     pub tree: sled::Tree,
 }
@@ -109,6 +115,24 @@ impl ZettelStore {
             })
             .collect()
     }
+
+    pub fn update(&self, id: ZettelId, update: ZettelUpdate) {
+        self.tree
+            .update_and_fetch(&id.encode(), |old| {
+                let mut zettel: Zettel = serde_cbor::from_slice(old.unwrap()).unwrap();
+
+                if let Some(ref title) = &update.title {
+                    zettel.title = title.clone();
+                }
+
+                if let Some(ref content) = &update.content {
+                    zettel.content = content.clone();
+                }
+
+                Some(serde_cbor::to_vec(&zettel).unwrap())
+            })
+            .unwrap();
+    }
 }
 
 #[post("/zettel.create")]
@@ -128,4 +152,10 @@ pub fn fetch(id: u64, store: &State<ZettelStore>) -> Result<Json<Zettel>, Status
 #[get("/zettel.query?<query>")]
 pub fn query(query: Option<String>, store: &State<ZettelStore>) -> Result<Json<Vec<QueryResult>>, Status> {
     Ok(Json(store.all()))
+}
+
+#[post("/zettel.update/<id>", format = "json", data = "<update>")]
+pub fn update(id: u64, update: Json<ZettelUpdate>, store: &State<ZettelStore>) -> Result<(), ()> {
+    store.update(ZettelId(id), update.into_inner());
+    Ok(())
 }
