@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
-    "strict": true,
+    "strict": false,
     "sourceMap": true,
     "noImplicitAny": false,
     "module": "es2020",

@@ -6,6 +6,7 @@ import Header from '../components/header';
 import CenteredContent from '../components/centered';
 import Flex from '../components/flex';
 import TextareaAutosize from 'react-autosize-textarea';
+import Editor from '../editor';
 
 function ZettelEditor(props: { id: number }) {
     return (
@@ -14,6 +15,7 @@ function ZettelEditor(props: { id: number }) {
             <CenteredContent>
                 <Flex auto column>
                     <Title placeholder="Add a title..." />
+                    <Editor />
                 </Flex>
             </CenteredContent>
         </>
