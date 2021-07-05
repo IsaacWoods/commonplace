@@ -802,6 +802,7 @@ __metadata:
     react-is: ^17.0.2
     react-router-dom: ^5.2.0
     styled-components: ^5.3.0
+    styled-normalize: ^8.0.7
     ts-loader: ^9.2.3
     typescript: ^4.3.4
     webpack: ^5.41.1
@@ -2012,6 +2013,15 @@ resolve@^1.9.0:
     react-dom: ">= 16.8.0"
     react-is: ">= 16.8.0"
   checksum: 1f94f92b5dab0b0a965646079604c184e9ef31fd0546881408039a5b4d9a4ebe73b6bb62b05912f06b68392352f1fed4c2dd66a74888b2446226aa0105b681c9
+  languageName: node
+  linkType: hard
+
+"styled-normalize@npm:^8.0.7":
+  version: 8.0.7
+  resolution: "styled-normalize@npm:8.0.7"
+  peerDependencies:
+    styled-components: ^4.0.0 || ^5.0.0
+  checksum: e4b77af7b7263f0a416c73dbdda0deaefb7ea9db0ecfea78902740dfbb35f58f06196090e27418bbe0d8378189f8777e53b842810fcc5d51e9e55bb812baa90b
   languageName: node
   linkType: hard
 
