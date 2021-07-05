@@ -11,5 +11,21 @@ export default function EditorView() {
         }
     }, [view]);
 
-    return (<div ref={viewRef} />);
+    return (<StyledView ref={viewRef} />);
 }
+
+const StyledView = styled.div`
+    .ProseMirror {
+        position: relative;
+        outline: none;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        white-space: break-spaces;
+        -webkit-font-variant-ligatures: none;
+        font-variant-ligatures: none;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+`;
