@@ -2,15 +2,15 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import Scene from '../components/scene';
-import Header from '../components/header';
+import Header, { Action } from '../components/header';
 import CenteredContent from '../components/centered';
 import Flex from '../components/flex';
 import TextareaAutosize from 'react-autosize-textarea';
 import EditorProvider from '../editor';
 import EditorView from '../editor/view';
 import ChangeReporter from '../editor/change_reporter';
-import { fetch_zettel } from '../zettel';
 import type { ZettelContent } from '../zettel';
+import { fetch_zettel, update_zettel } from '../zettel';
 
 function ZettelEditor(props: { id: number }) {
     const [zettel, setZettel] = React.useState(null);
@@ -27,9 +27,17 @@ function ZettelEditor(props: { id: number }) {
         setZettel((zettel) => ({ ...zettel, content }));
     }, [setZettel]);
 
+    const onSave = React.useCallback(() => {
+        if (zettel) {
+            update_zettel(props.id, zettel);
+        }
+    }, [props.id, zettel, update_zettel]);
+
     return (
         <>
-            <Header title={zettel ? zettel.title : "Loading Zettel..."} />
+            <Header title={zettel ? zettel.title : "Loading Zettel..."} actions={
+                <Action><button onClick={onSave}>Save</button></Action>
+            } />
             <CenteredContent>
                 { zettel ?
                     <Flex auto column>

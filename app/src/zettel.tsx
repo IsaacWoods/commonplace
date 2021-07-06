@@ -59,3 +59,21 @@ export async function fetch_zettel(id: number): Promise<Zettel> {
         throw new Error(`Failed to fetch Zettel: ${response}`);
     }
 }
+
+export async function update_zettel(id: number, zettel: Zettel) {
+    console.log("Updating zettel: ", id);
+
+    let response = await fetch(`/api/zettel.update/${id}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(zettel),
+    });
+
+    if (response.status === 200) {
+        console.log("Update was successful");
+    } else {
+        console.log("Update failed: ", response);
+    }
+}
