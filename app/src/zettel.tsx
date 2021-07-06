@@ -31,6 +31,12 @@ export type Mark = {
     href?: string,
 }
 
+export type QueryResult = {
+    id: number,
+    title?: string,
+    content?: ZettelContent,
+}
+
 export async function create_zettel(): Promise<number> {
     let response = await fetch("/api/zettel.create/", {
         method: "POST",
@@ -79,6 +85,17 @@ export async function update_zettel(id: number, zettel: Zettel) {
         console.log("Update failed: ", response);
     }
 }
+
+export async function query_zettels(query?: string): Promise<QueryResult[]> {
+    let response = await fetch(`/api/zettel.query?query=${query}`);
+
+    if (response.status === 200) {
+        return response.json();
+    } else {
+        throw new Error(`Failed to query Zettels: ${response}`);
+    }
+}
+
 type CacheState = {
     zettels: Map<number, Zettel>,
 }
