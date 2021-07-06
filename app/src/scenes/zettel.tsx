@@ -17,6 +17,13 @@ function ZettelEditor(props: { id: number }) {
     const [zettel, setZettel] = React.useState(null);
 
     React.useEffect(() => {
+        // See if the Zettel is already in the cache
+        const zettel = zettelCache.state.zettels.get(props.id);
+        if (zettel) {
+            setZettel(zettel);
+            return;
+        }
+
         fetch_zettel(props.id).then((result) => {
             setZettel(result);
             zettelCache.dispatch({ type: "updateZettel", id: props.id, zettel: result });
