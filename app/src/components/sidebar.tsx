@@ -16,7 +16,7 @@ export default function Sidebar() {
     }, []);
 
     const zettels = Array.from(zettelCache.state.zettels).map(([id, zettel]: [number, Zettel]) => {
-        return (<NavLink key={id} to={`/zettel/${id}`}>{zettel.title}</NavLink>);
+        return (<NavLink key={id} to={`/zettel/${id}`}>{zettel.title || "Untitled Zettel"}</NavLink>);
     });
 
     return (
