@@ -23,6 +23,21 @@ function ZettelEditor(props: { id: number }) {
         });
     }, [props.id]);
 
+    /*
+     * We want to save the Zettel when the editor is unmounted, but we can't access the state in `zettel` for this.
+     * Instead, we store the Zettel in a ref, which lasts for the entire lifetime of the component, and use that to
+     * access the Zettel during cleanup.
+     */
+    const zettelRef = React.useRef();
+    React.useEffect(() => { zettelRef.current = zettel; }, [zettel]);
+    React.useEffect(() => {
+        return () => {
+            if (zettelRef.current) {
+                update_zettel(props.id, zettelRef.current);
+            }
+        };
+    }, []);
+
     const onChange = React.useCallback((content: ZettelContent) => {
         setZettel((zettel) => ({ ...zettel, content }));
     }, [setZettel]);
