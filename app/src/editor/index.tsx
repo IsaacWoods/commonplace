@@ -15,6 +15,7 @@ import Bold from './marks/bold';
 import Italic from './marks/italic';
 import Highlight from './marks/highlight';
 import Strikethrough from './marks/strikethrough';
+import Link from './marks/link';
 
 type Editor = {
     state: EditorState,
@@ -36,6 +37,10 @@ type ProviderProps = {
  * The actual Prosemirror DOM is rendered by `EditorView`.
  */
 export default function EditorProvider(props: ProviderProps) {
+    const onClickLink = React.useCallback((href: string) => {
+        console.log("Clicked link: ", href);
+    }, []);
+
     const [functionalities] = React.useState(() => {
         return new Functionalities([
             /*
@@ -52,6 +57,7 @@ export default function EditorProvider(props: ProviderProps) {
              new Italic(),
              new Highlight(),
              new Strikethrough(),
+             new Link(onClickLink),
         ]);
     });
 

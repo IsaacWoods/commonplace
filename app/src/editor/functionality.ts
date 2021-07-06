@@ -107,3 +107,9 @@ export function markInputRule(pattern: RegExp, markType: MarkType, getAttrs?: (m
         return tr;
     });
 }
+
+const isMac = /Mac/.test(navigator.platform);
+
+export function isModKey(event: KeyboardEvent | MouseEvent): boolean {
+    return (isMac ? event.metaKey : event.ctrlKey);
+}
