@@ -14,6 +14,8 @@ function parseBlock(schema: Schema, block: Block): Node {
     switch (block.type) {
         case "Paragraph":
             return schema.node("paragraph", null, block.inlines.map((inline) => parseInline(schema, inline)));
+        case "Heading":
+            return schema.node("heading", { level: block.level }, block.inlines.map((inline) => parseInline(schema, inline)));
         case "Divider":
             return schema.node("divider", null, []);
         default:
