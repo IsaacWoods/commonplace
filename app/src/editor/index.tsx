@@ -7,6 +7,8 @@ import Functionalities from './functionality';
 import type { ZettelContent } from '../zettel';
 import parseZettel from './parser';
 
+import History from './history';
+
 import Doc from './nodes/doc';
 import Text from './nodes/text';
 import Paragraph from './nodes/paragraph';
@@ -46,6 +48,8 @@ export default function EditorProvider(props: ProviderProps) {
 
     const [functionalities] = React.useState(() => {
         return new Functionalities([
+            new History(),
+
             /*
              * Nodes
              */
