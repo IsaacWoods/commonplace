@@ -64,4 +64,8 @@ const StyledView = styled.div`
         border: 0;
         border-top: 1px solid ${props => props.theme.divider};
     }
+
+    ul {
+        margin: 0 0 0 -20px;
+    }
 `;

@@ -12,6 +12,7 @@ import Text from './nodes/text';
 import Paragraph from './nodes/paragraph';
 import Heading from './nodes/heading';
 import Divider from './nodes/divider';
+import { List, ListItem } from './nodes/list';
 
 import Bold from './marks/bold';
 import Italic from './marks/italic';
@@ -53,6 +54,8 @@ export default function EditorProvider(props: ProviderProps) {
             new Paragraph(),
             new Heading(),
             new Divider(),
+            new List(),
+            new ListItem(),
 
             /*
              * Marks
