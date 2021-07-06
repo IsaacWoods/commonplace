@@ -6,6 +6,7 @@ import { Schema } from 'prosemirror-model';
 import Functionalities from './functionality';
 import type { ZettelContent } from '../zettel';
 import parseZettel from './parser';
+import { useHistory } from 'react-router-dom';
 
 import History from './history';
 
@@ -42,8 +43,14 @@ type ProviderProps = {
  * The actual Prosemirror DOM is rendered by `EditorView`.
  */
 export default function EditorProvider(props: ProviderProps) {
+    const history = useHistory();
+
     const onClickLink = React.useCallback((href: string) => {
-        console.log("Clicked link: ", href);
+        if (href[0] === "/") {
+            history.push(href);
+        } else {
+            window.open(href, "_blank");
+        }
     }, []);
 
     const [functionalities] = React.useState(() => {
