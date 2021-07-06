@@ -10,6 +10,7 @@ import parseZettel from './parser';
 import Doc from './nodes/doc';
 import Text from './nodes/text';
 import Paragraph from './nodes/paragraph';
+import Divider from './nodes/divider';
 
 import Bold from './marks/bold';
 import Italic from './marks/italic';
@@ -49,6 +50,7 @@ export default function EditorProvider(props: ProviderProps) {
             new Doc(),
             new Text(),
             new Paragraph(),
+            new Divider(),
 
             /*
              * Marks

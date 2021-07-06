@@ -28,4 +28,10 @@ const StyledView = styled.div`
     pre {
         white-space: pre-wrap;
     }
+
+    hr {
+        position: relative;
+        border: 0;
+        border-top: 1px solid ${props => props.theme.divider};
+    }
 `;
