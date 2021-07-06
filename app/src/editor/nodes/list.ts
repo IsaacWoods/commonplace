@@ -1,7 +1,7 @@
 import { Functionality } from '../functionality';
 import { textblockTypeInputRule } from 'prosemirror-inputrules';
 import { EditorState, Transaction } from 'prosemirror-state';
-import { splitListItem, liftListItem, wrapInList } from 'prosemirror-schema-list';
+import { splitListItem, sinkListItem, liftListItem, wrapInList } from 'prosemirror-schema-list';
 import { NodeType } from 'prosemirror-model';
 import { wrappingInputRule } from 'prosemirror-inputrules';
 import { findParentNode } from 'prosemirror-utils';
@@ -33,7 +33,9 @@ export class ListItem extends Functionality {
 
                 if (dispatch) dispatch(state.tr.split(state.selection.to));
                 return true;
-            }
+            },
+            "Tab": sinkListItem(schema.nodes.list_item),
+            "Shift-Tab": liftListItem(schema.nodes.list_item),
         }
     }
 }
