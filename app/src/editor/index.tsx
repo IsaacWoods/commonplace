@@ -12,6 +12,7 @@ import Text from './nodes/text';
 import Paragraph from './nodes/paragraph';
 
 import Bold from './marks/bold';
+import Italic from './marks/italic';
 
 type Editor = {
     state: EditorState,
@@ -46,6 +47,7 @@ export default function EditorProvider(props: ProviderProps) {
              * Marks
              */
              new Bold(),
+             new Italic(),
         ]);
     });
 
