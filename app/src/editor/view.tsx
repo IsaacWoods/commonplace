@@ -68,4 +68,23 @@ const StyledView = styled.div`
     ul {
         margin: 0 0 0 -20px;
     }
+
+    .ProseMirror-gapcursor {
+        display: none;
+        pointer-events: none;
+        position: absolute;
+    }
+
+    .ProseMirror-gapcursor:after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: -2px;
+        width: 20px;
+        border-top: 1px solid black;
+    }
+
+    .ProseMirror-focused .ProseMirror-gapcursor {
+        display: block;
+    }
 `;

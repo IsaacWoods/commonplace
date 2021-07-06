@@ -3,6 +3,7 @@ import { Schema, Mark, MarkType } from 'prosemirror-model';
 import { keymap } from 'prosemirror-keymap';
 import { baseKeymap } from 'prosemirror-commands';
 import { inputRules, InputRule } from 'prosemirror-inputrules';
+import { gapCursor } from 'prosemirror-gapcursor';
 
 export type Command = (state: EditorState, dispatch) => boolean;
 export type CommandConstructor = (attrs) => ((state: EditorState, dispatch) => boolean);
@@ -66,6 +67,7 @@ export default class Functionalities {
             ...from_functionalities,
             ...keymaps,
             inputRules({ rules: input_rules }),
+            gapCursor(),
         ];
     }
 
