@@ -42,6 +42,10 @@ function ZettelEditor(props: { id: number }) {
         setZettel((zettel) => ({ ...zettel, content }));
     }, [setZettel]);
 
+    const onChangeTitle = React.useCallback((event: React.SyntheticEvent<HTMLTextAreaElement>) => {
+        setZettel((zettel) => ({ ...zettel, title: (event.target as HTMLTextAreaElement).value }));
+    }, [setZettel]);
+
     const onSave = React.useCallback(() => {
         if (zettel) {
             update_zettel(props.id, zettel);
@@ -56,8 +60,7 @@ function ZettelEditor(props: { id: number }) {
             <CenteredContent>
                 { zettel ?
                     <Flex auto column>
-                        <Title defaultValue={zettel.title} placeholder="Add a title..." />
-                        { /* TODO: pass Zettel contents into Prosemirror somehow */ }
+                        <Title defaultValue={zettel.title} placeholder="Add a title..." onChange={onChangeTitle} />
                         <EditorProvider content={zettel.content}>
                             <ChangeReporter onChange={onChange} />
                             <EditorView />
