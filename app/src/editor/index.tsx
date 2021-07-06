@@ -14,6 +14,7 @@ import Paragraph from './nodes/paragraph';
 import Bold from './marks/bold';
 import Italic from './marks/italic';
 import Highlight from './marks/highlight';
+import Strikethrough from './marks/strikethrough';
 
 type Editor = {
     state: EditorState,
@@ -50,6 +51,7 @@ export default function EditorProvider(props: ProviderProps) {
              new Bold(),
              new Italic(),
              new Highlight(),
+             new Strikethrough(),
         ]);
     });
 
