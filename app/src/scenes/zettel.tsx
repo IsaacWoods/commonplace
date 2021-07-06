@@ -8,7 +8,9 @@ import Flex from '../components/flex';
 import TextareaAutosize from 'react-autosize-textarea';
 import EditorProvider from '../editor';
 import EditorView from '../editor/view';
+import ChangeReporter from '../editor/change_reporter';
 import { fetch_zettel } from '../zettel';
+import type { ZettelContent } from '../zettel';
 
 function ZettelEditor(props: { id: number }) {
     const [zettel, setZettel] = React.useState(null);
@@ -21,6 +23,10 @@ function ZettelEditor(props: { id: number }) {
         });
     }, [props.id]);
 
+    const onChange = React.useCallback((content: ZettelContent) => {
+        setZettel((zettel) => ({ ...zettel, content }));
+    }, [setZettel]);
+
     return (
         <>
             <Header title={zettel ? zettel.title : "Loading Zettel..."} />
@@ -30,6 +36,7 @@ function ZettelEditor(props: { id: number }) {
                         <Title defaultValue={zettel.title} placeholder="Add a title..." />
                         { /* TODO: pass Zettel contents into Prosemirror somehow */ }
                         <EditorProvider content={zettel.content}>
+                            <ChangeReporter onChange={onChange} />
                             <EditorView />
                         </EditorProvider>
                     </Flex>
