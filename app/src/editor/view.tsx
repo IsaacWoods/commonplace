@@ -53,6 +53,11 @@ const StyledView = styled.div`
     h4:before { content: "H4"; }
     h5:before { content: "H5"; }
     h6:before { content: "H6"; }
+
+    p {
+        margin: 0;
+    }
+
     hr {
         position: relative;
         border: 0;
