@@ -7,13 +7,16 @@ export const theme = {
     placeholder: "#a2b2b4",
     divider: "#e6e6eb",
 
+    fontFamily: "-apple-system, sans-serif",
+    fontFamilyMono: "monospace",
+
     sidebarWidth: 240,
     sidebarColor: "rgba(247, 246, 243)",
 
     headerDepth: 500,
 };
 
-export const GlobalStyle = createGlobalStyle<{ theme: { text: string } }>`
+export const GlobalStyle = createGlobalStyle<{ theme: { text: string, fontFamily: string } }>`
     ${normalizeStyle}
 
     * {
@@ -21,7 +24,7 @@ export const GlobalStyle = createGlobalStyle<{ theme: { text: string } }>`
     }
 
     body {
-        font-family: -apply-system, sans-serif;
+        font-family: ${props => props.theme.fontFamily};
         text-rendering: optimizeLegibility;
         color: ${props => props.theme.text};
     }

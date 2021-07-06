@@ -36,7 +36,23 @@ const StyledView = styled.div`
     h5,
     h6 {
         margin: 1em 0 0;
+
+        &:before {
+            display: inline-block;
+            color: ${props => props.theme.placeholder};
+            font-size: 12px;
+            font-family: ${props => props.theme.fontFamilyMono};
+            margin-left: -20px;
+            width: 20px;
+            line-height: 0;
+        }
     }
+    h1:before { content: "H1"; }
+    h2:before { content: "H2"; }
+    h3:before { content: "H3"; }
+    h4:before { content: "H4"; }
+    h5:before { content: "H5"; }
+    h6:before { content: "H6"; }
     hr {
         position: relative;
         border: 0;
