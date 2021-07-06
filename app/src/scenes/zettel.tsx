@@ -10,14 +10,16 @@ import EditorProvider from '../editor';
 import EditorView from '../editor/view';
 import ChangeReporter from '../editor/change_reporter';
 import type { ZettelContent } from '../zettel';
-import { fetch_zettel, update_zettel } from '../zettel';
+import { fetch_zettel, update_zettel, ZettelCache } from '../zettel';
 
 function ZettelEditor(props: { id: number }) {
+    const zettelCache = React.useContext(ZettelCache);
     const [zettel, setZettel] = React.useState(null);
 
     React.useEffect(() => {
         fetch_zettel(props.id).then((result) => {
             setZettel(result);
+            zettelCache.dispatch({ type: "updateZettel", id: props.id, zettel: result });
         }).catch((error) => {
             console.log("Error: ", error);
         });
@@ -34,6 +36,7 @@ function ZettelEditor(props: { id: number }) {
         return () => {
             if (zettelRef.current) {
                 update_zettel(props.id, zettelRef.current);
+                zettelCache.dispatch({ type: "updateZettel", id: props.id, zettel: zettelRef.current });
             }
         };
     }, []);
@@ -49,6 +52,7 @@ function ZettelEditor(props: { id: number }) {
     const onSave = React.useCallback(() => {
         if (zettel) {
             update_zettel(props.id, zettel);
+            zettelCache.dispatch({ type: "updateZettel", id: props.id, zettel });
         }
     }, [props.id, zettel, update_zettel]);
 
