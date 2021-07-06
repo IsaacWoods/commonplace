@@ -4,6 +4,7 @@ import { EditorState, Transaction } from 'prosemirror-state';
 import { splitListItem, liftListItem, wrapInList } from 'prosemirror-schema-list';
 import { NodeType } from 'prosemirror-model';
 import { wrappingInputRule } from 'prosemirror-inputrules';
+import { findParentNode } from 'prosemirror-utils';
 
 export class ListItem extends Functionality {
     node() {
@@ -55,6 +56,45 @@ export class List extends Functionality {
             wrappingInputRule(/^\s*([-*])\s*$/, schema.nodes.list),
         ];
     }
+
+    keys(schema) {
+        return {
+            "Mod-Shift-8": toggleList(schema.nodes.list, schema.nodes.list_item),
+        };
+    }
+}
+
+function toggleList(listType: NodeType, itemType: NodeType) {
+    return (state: EditorState, dispatch: (tr: Transaction) => void) => {
+        const { schema, selection } = state;
+        const { $from, $to } = selection;
+        const range = $from.blockRange($to);
+
+        if (!range) {
+            return false;
+        }
+
+        const parentList = findParentNode(node => isList(node, schema))(selection);
+        if (range.depth >= 1 && parentList && range.depth - parentList.depth <= 1) {
+            if (parentList.node.type === listType) {
+                return liftListItem(itemType)(state, dispatch);
+            }
+
+            if (isList(parentList.node, schema) && listType.validContent(parentList.node.content)) {
+                const { tr } = state;
+                tr.setNodeMarkup(parentList.pos, listType);
+
+                if (dispatch) dispatch(tr);
+                return false;
+            }
+        }
+
+        return wrapInList(listType)(state, dispatch);
+    };
+}
+
+function isList(node, schema) {
+    return (node.type === schema.nodes.list);
 }
 
 function isInList(state) {
