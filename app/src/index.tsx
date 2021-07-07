@@ -5,11 +5,8 @@ import { ThemeProvider } from 'styled-components';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ZettelCacheProvider } from './zettel';
 
+import Home from './scenes/home';
 import Zettel from './scenes/zettel';
-
-function Home() {
-    return (<h1>Home</h1>);
-}
 
 const App = () => (
     <ThemeProvider theme={theme}>
