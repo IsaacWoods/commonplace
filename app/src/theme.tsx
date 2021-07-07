@@ -1,22 +1,24 @@
 import { createGlobalStyle } from 'styled-components';
 import normalizeStyle from 'styled-normalize';
+import { lighten } from 'polished';
 
 export const theme = {
     background: "#ffffff",
-    text: "#141419",
+    text: "rgb(55, 53, 48)",
     placeholder: "#a2b2b4",
     divider: "#e6e6eb",
+    link: "rgb(80, 80, 80)",
 
     fontFamily: "-apple-system, sans-serif",
     fontFamilyMono: "monospace",
 
     sidebarWidth: 240,
-    sidebarColor: "rgba(247, 246, 243)",
+    sidebarColor: "rgb(247, 246, 243)",
 
     headerDepth: 500,
 };
 
-export const GlobalStyle = createGlobalStyle<{ theme: { text: string, fontFamily: string } }>`
+export const GlobalStyle = createGlobalStyle<{ theme: { text: string, link: string, fontFamily: string } }>`
     ${normalizeStyle}
 
     * {
@@ -46,4 +48,15 @@ export const GlobalStyle = createGlobalStyle<{ theme: { text: string, fontFamily
     h4 { font-size: 1em; }
     h5 { font-size: 0.875em; }
     h6 { font-size: 0.75em; }
+
+    a {
+        color: ${props => props.theme.link};
+        text-decoration: none;
+        border-bottom: 1px solid ${props => lighten(0.5, props.theme.link)};
+        cursor: pointer;
+
+        &:hover {
+            border-bottom: 1px solid ${props => props.theme.link};
+        }
+    }
 `;

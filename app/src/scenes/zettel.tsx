@@ -100,7 +100,7 @@ const Title = styled(TextareaAutosize)`
     margin-top: 1em;
     margin-bottom: 0.5em;
 
-    font-size: 2.25em;
+    font-size: 3em;
     font-weight: 500;
     line-height: 1.25;
 

@@ -55,8 +55,8 @@ const StyledView = styled.div`
     h6:before { content: "H6"; }
 
     p {
-        margin: 0 0 0.3em 0;
-        line-height: 1.25;
+        margin: 0 0 0.5em 0;
+        line-height: 1.5;
     }
 
     hr {
