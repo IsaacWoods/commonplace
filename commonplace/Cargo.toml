@@ -1,0 +1,11 @@
+[package]
+name = "commonplace"
+version = "0.1.0"
+authors = ["Isaac Woods"]
+edition = "2018"
+license = "MIT/Apache-2.0"
+description = "Library for interacting with the Commonplace note storing system"
+
+[dependencies]
+chrono = "0.4"
+serde = { version = "1", features = ["derive"] }
