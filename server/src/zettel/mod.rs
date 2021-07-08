@@ -92,8 +92,8 @@ pub fn fetch(id: u64, store: &State<ZettelStore>) -> Result<Json<Zettel>, Status
     }
 }
 
-#[get("/zettel.query?<query>")]
-pub fn query(query: Option<String>, store: &State<ZettelStore>) -> Result<Json<Vec<QueryResult>>, Status> {
+#[get("/zettel.list")]
+pub fn list(store: &State<ZettelStore>) -> Result<Json<Vec<QueryResult>>, Status> {
     Ok(Json(store.all()))
 }
 

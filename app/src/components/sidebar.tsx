@@ -2,14 +2,14 @@ import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import Flex from './flex';
-import { ZettelCache, query_zettels, Zettel, QueryResult } from '../zettel';
+import { ZettelCache, list_zettels, Zettel, ZettelResult } from '../zettel';
 
 export default function Sidebar() {
     const zettelCache = React.useContext(ZettelCache);
 
     React.useEffect(() => {
-        query_zettels().then((zettels) => {
-            zettels.forEach((zettel: QueryResult) => {
+        list_zettels().then((zettels) => {
+            zettels.forEach((zettel: ZettelResult) => {
                 zettelCache.dispatch({ type: "updateZettel", id: zettel.id, zettel: { title: zettel.title, content: zettel.content }});
             });
         });

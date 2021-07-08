@@ -31,7 +31,9 @@ export type Mark = {
     href?: string,
 }
 
-export type QueryResult = {
+// This is returned by endpoints that are not called for a specific Zettel ID. The title and content may be
+// missing, depending on the endpoint and various options, to save them being fetched and sent if not needed.
+export type ZettelResult = {
     id: number,
     title?: string,
     content?: ZettelContent,
@@ -86,13 +88,13 @@ export async function update_zettel(id: number, zettel: Zettel) {
     }
 }
 
-export async function query_zettels(query?: string): Promise<QueryResult[]> {
-    let response = await fetch(`/api/zettel.query?query=${query}`);
+export async function list_zettels(): Promise<ZettelResult[]> {
+    let response = await fetch("/api/zettel.list");
 
     if (response.status === 200) {
         return response.json();
     } else {
-        throw new Error(`Failed to query Zettels: ${response}`);
+        throw new Error(`Failed to get list of Zettels: ${response}`);
     }
 }
 
