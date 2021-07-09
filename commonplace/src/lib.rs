@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 /// allows a Zettel to be created every second, which I think will be okay for real-world purposes.
 ///
 /// The time in the timestamp is UTC+0, and the date uses the Holocene calendar.
-#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[repr(transparent)]
 pub struct ZettelId(pub u64);
 
