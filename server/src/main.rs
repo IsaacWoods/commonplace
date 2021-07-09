@@ -17,7 +17,7 @@ use std::path::Path;
 pub fn rocket() -> _ {
     rocket::build()
         .manage(zettel::ZettelStore::new())
-        .mount("/api", routes![zettel::create, zettel::fetch, zettel::list, zettel::update])
+        .mount("/api", routes![zettel::create, zettel::fetch, zettel::list, zettel::search, zettel::update])
         .mount("/static", FileServer::from(relative!("../app/dist")))
         .mount("/", AppPage(Path::new(relative!("../app/dist/index.html"))))
 }

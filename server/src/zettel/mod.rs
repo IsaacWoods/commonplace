@@ -1,4 +1,7 @@
+mod index;
+
 use commonplace::{content::Block, Zettel, ZettelId};
+use index::Index;
 use rocket::{get, http::Status, post, serde::json::Json, State};
 use serde::{Deserialize, Serialize};
 use std::{convert::TryInto, ops::Deref};
@@ -17,12 +20,13 @@ pub struct ZettelUpdate {
 }
 
 pub struct ZettelStore {
-    pub tree: sled::Tree,
+    tree: sled::Tree,
+    index: Index,
 }
 
 impl ZettelStore {
     pub fn new() -> ZettelStore {
-        ZettelStore { tree: sled::open("db").unwrap().open_tree("zettels").unwrap() }
+        ZettelStore { tree: sled::open("db").unwrap().open_tree("zettels").unwrap(), index: Index::create() }
     }
 
     pub fn create(&self) -> ZettelId {
@@ -59,6 +63,10 @@ impl ZettelStore {
             .collect()
     }
 
+    pub fn search(&self, query: &str) {
+        self.index.search(query)
+    }
+
     pub fn update(&self, id: ZettelId, update: ZettelUpdate) {
         self.tree
             .update_and_fetch(&id.encode(), |old| {
@@ -71,6 +79,8 @@ impl ZettelStore {
                 if let Some(ref content) = &update.content {
                     zettel.content = content.clone();
                 }
+
+                self.index.update_zettel(id, &zettel);
 
                 Some(serde_cbor::to_vec(&zettel).unwrap())
             })
@@ -94,6 +104,15 @@ pub fn fetch(id: u64, store: &State<ZettelStore>) -> Result<Json<Zettel>, Status
 
 #[get("/zettel.list")]
 pub fn list(store: &State<ZettelStore>) -> Result<Json<Vec<QueryResult>>, Status> {
+    Ok(Json(store.all()))
+}
+
+#[get("/zettel.search?<query>")]
+pub fn search(query: Option<String>, store: &State<ZettelStore>) -> Result<Json<Vec<QueryResult>>, Status> {
+    if let Some(query) = query {
+        store.search(&query);
+    }
+
     Ok(Json(store.all()))
 }
 
