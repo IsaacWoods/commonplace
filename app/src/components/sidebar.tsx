@@ -16,7 +16,7 @@ export default function Sidebar() {
     }, []);
 
     const zettels = Array.from(zettelCache.state.zettels).map(([id, zettel]: [number, Zettel]) => {
-        return (<NavLink key={id} to={`/zettel/${id}`}>{zettel.title || "Untitled Zettel"}</NavLink>);
+        return (<Link key={id} to={`/zettel/${id}`}>{zettel.title || "Untitled Zettel"}</Link>);
     });
 
     return (
@@ -36,4 +36,8 @@ const Container = styled(Flex)`
     background: ${props => props.theme.sidebarColor};
     z-index: 10;
     margin: 0;
+`;
+
+const Link = styled(NavLink)`
+    margin-bottom: 4px;
 `;
