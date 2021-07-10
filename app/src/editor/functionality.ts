@@ -15,7 +15,7 @@ type MarkEntry = { name: string, schema: unknown };
 // bindings, plugins, commands, nodes, marks, etc. This allows better code organisation and understandability by
 // centralising all of the parts that enable a contained piece of functionality.
 export class Functionality {
-    plugins(schema: Schema): Plugin<any, any>[] {
+    plugins(schema: Schema): Plugin[] {
         return [];
     }
 

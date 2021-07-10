@@ -9,6 +9,7 @@ import parseZettel from './parser';
 import { useHistory } from 'react-router-dom';
 
 import History from './history';
+import { InsertMenuOpener } from './insert_menu';
 
 import Doc from './nodes/doc';
 import Text from './nodes/text';
@@ -51,11 +52,20 @@ export default function EditorProvider(props: ProviderProps) {
         } else {
             window.open(href, "_blank");
         }
+    }, [history]);
+
+    const onOpenInsertMenu = React.useCallback(() => {
+        console.log("Opening insert menu");
+    }, []);
+
+    const onCloseInsertMenu = React.useCallback(() => {
+        console.log("Closing insert menu");
     }, []);
 
     const [functionalities] = React.useState(() => {
         return new Functionalities([
             new History(),
+            new InsertMenuOpener(onOpenInsertMenu, onCloseInsertMenu),
 
             /*
              * Nodes

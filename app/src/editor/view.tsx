@@ -87,4 +87,17 @@ const StyledView = styled.div`
     .ProseMirror-focused .ProseMirror-gapcursor {
         display: block;
     }
+
+    .placeholder {
+        position: relative;
+        &:before {
+            position: absolute;
+            content: attr(data-text);
+            color: ${props => props.theme.placeholder};
+        }
+    }
+
+    .add-padding-for-slash:before {
+        left: 0.5em;
+    }
 `;
