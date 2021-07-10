@@ -22,7 +22,16 @@ export default function Sidebar() {
     return (
         <Container column>
             <h2>Hello, Isaac</h2>
-            {zettels}
+
+            <Section>
+                <Link exact to="/">Home</Link>
+                <Link to="/search">Search</Link>
+            </Section>
+
+            <Section>
+                <Header>Pinned</Header>
+                {zettels}
+            </Section>
         </Container>
     );
 }
@@ -36,6 +45,20 @@ const Container = styled(Flex)`
     background: ${props => props.theme.sidebarColor};
     z-index: 10;
     margin: 0;
+`;
+
+const Section = styled(Flex)`
+    flex-direction: column;
+    flex-shrink: 0;
+    margin: 0 8px 20px;
+`;
+
+const Header = styled(Flex)`
+    margin: 4px 16px 0;
+    font-weight: 600;
+    font-size: 10px;
+    color: ${props => props.theme.link};
+    text-transform: uppercase;
 `;
 
 const Link = styled(NavLink)`
