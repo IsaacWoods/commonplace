@@ -50,16 +50,18 @@ impl Index {
         index_writer.commit().unwrap();
     }
 
-    // TODO: actually return something
-    pub fn search(&self, query: &str) {
+    pub fn search(&self, query: &str) -> Vec<ZettelId> {
         let reader = self.index.reader().unwrap();
         let searcher = reader.searcher();
         let query = self.query_parser.parse_query(query).unwrap();
         let top_docs = searcher.search(&query, &TopDocs::with_limit(10)).unwrap();
 
-        for (score, doc_address) in top_docs {
-            let doc = searcher.doc(doc_address).unwrap();
-            println!("Found document (score = {}): {:?}", score, doc);
-        }
+        top_docs
+            .iter()
+            .map(|(_score, doc_address)| {
+                let doc = searcher.doc(*doc_address).unwrap();
+                ZettelId(doc.get_first(self.fields.id).unwrap().u64_value().unwrap())
+            })
+            .collect()
     }
 }

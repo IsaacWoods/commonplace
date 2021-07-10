@@ -63,7 +63,7 @@ impl ZettelStore {
             .collect()
     }
 
-    pub fn search(&self, query: &str) {
+    pub fn search(&self, query: &str) -> Vec<ZettelId> {
         self.index.search(query)
     }
 
@@ -108,12 +108,12 @@ pub fn list(store: &State<ZettelStore>) -> Result<Json<Vec<QueryResult>>, Status
 }
 
 #[get("/zettel.search?<query>")]
-pub fn search(query: Option<String>, store: &State<ZettelStore>) -> Result<Json<Vec<QueryResult>>, Status> {
+pub fn search(query: Option<String>, store: &State<ZettelStore>) -> Result<Json<Vec<ZettelId>>, Status> {
     if let Some(query) = query {
-        store.search(&query);
+        Ok(Json(store.search(&query)))
+    } else {
+        Ok(Json(Vec::new()))
     }
-
-    Ok(Json(store.all()))
 }
 
 #[post("/zettel.update/<id>", format = "json", data = "<update>")]
