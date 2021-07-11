@@ -100,6 +100,7 @@ export function InsertMenu(props: Props) {
                     <li><Item onClick={doCommand((commands.insertHeader as CommandConstructor)({ level: 2 }))}>Header 2</Item></li>
                     <li><Item onClick={doCommand((commands.insertHeader as CommandConstructor)({ level: 3 }))}>Header 3</Item></li>
                     <li><Item onClick={doCommand((commands.insertHeader as CommandConstructor)({ level: 4 }))}>Header 4</Item></li>
+                    <li><Item onClick={doCommand(commands.insertDivider as Command)}>Divider</Item></li>
                 </List>
             </Container>
         </Portal>
