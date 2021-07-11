@@ -83,6 +83,11 @@ export function InsertMenu(props: Props) {
 
     const doCommand = React.useCallback((command: Command) => () => {
         view.focus();
+
+        // Get rid of the '/'
+        const parent = findParentNode(node => !!node)(view.state.selection);
+        view.dispatch(view.state.tr.insertText("", parent.pos, view.state.selection.to));
+
         (command)(view.state, view.dispatch);
         props.onClose();
     }, [view, props.onClose]);
@@ -116,6 +121,14 @@ const Container = styled.div<{left: number, top: number}>`
     font-family: ${props => props.theme.fontFamily};
 `;
 
-const List = styled.ul``;
+const List = styled.ul`
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+`;
 
-const Item = styled.button``;
+const Item = styled.button`
+    border: none;
+    outline: none;
+`;
