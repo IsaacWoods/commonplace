@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { Schema } from 'prosemirror-model';
-import Functionalities from './functionality';
+import Functionalities, { Command, CommandConstructor } from './functionality';
 import type { ZettelContent } from '../zettel';
 import parseZettel from './parser';
 import { useHistory } from 'react-router-dom';
@@ -27,6 +27,7 @@ import Link from './marks/link';
 type Editor = {
     state: EditorState,
     view: EditorView,
+    commands: Record<string, Command | CommandConstructor>,
 }
 
 const EditorContext = React.createContext<Editor | null>(null);
@@ -93,6 +94,7 @@ export default function EditorProvider(props: ProviderProps) {
     });
 
     const [schema] = React.useState(() => functionalities.schema());
+    const [commands] = React.useState(() => functionalities.commands(schema));
 
     const [state, setState] = React.useState(() => {
         return EditorState.create({
@@ -114,7 +116,7 @@ export default function EditorProvider(props: ProviderProps) {
         })
     });
 
-    const context = React.useMemo(() => ({ state, view }), [state, view]);
+    const context = React.useMemo(() => ({ state, view, commands }), [state, view, commands]);
 
     return (
         <EditorContext.Provider value={context}>
