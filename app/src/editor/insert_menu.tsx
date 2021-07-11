@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Portal } from 'react-portal';
-import { Functionality } from './functionality';
+import { Functionality, Command, CommandConstructor } from './functionality';
 import { InputRule } from 'prosemirror-inputrules';
 import { Schema } from 'prosemirror-model';
 import { Plugin, EditorState } from 'prosemirror-state';
@@ -78,13 +78,24 @@ type Props = {
 }
 
 export function InsertMenu(props: Props) {
-    const { view } = useEditor();
+    const { view, commands } = useEditor();
     const position = view.coordsAtPos(view.state.selection.from);
+
+    const doCommand = React.useCallback((command: Command) => () => {
+        view.focus();
+        (command)(view.state, view.dispatch);
+        props.onClose();
+    }, [view, props.onClose]);
 
     return (
         <Portal>
             <Container left={position.left} top={position.top + 20}>
-                <p>Menu goes here</p>
+                <List>
+                    <li><Item onClick={doCommand((commands.insertHeader as CommandConstructor)({ level: 1 }))}>Header 1</Item></li>
+                    <li><Item onClick={doCommand((commands.insertHeader as CommandConstructor)({ level: 2 }))}>Header 2</Item></li>
+                    <li><Item onClick={doCommand((commands.insertHeader as CommandConstructor)({ level: 3 }))}>Header 3</Item></li>
+                    <li><Item onClick={doCommand((commands.insertHeader as CommandConstructor)({ level: 4 }))}>Header 4</Item></li>
+                </List>
             </Container>
         </Portal>
     );
@@ -104,3 +115,7 @@ const Container = styled.div<{left: number, top: number}>`
 
     font-family: ${props => props.theme.fontFamily};
 `;
+
+const List = styled.ul``;
+
+const Item = styled.button``;
