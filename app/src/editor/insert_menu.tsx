@@ -126,9 +126,29 @@ const List = styled.ul`
     padding: 0;
     margin: 0;
     height: 100%;
+    text-align: left;
 `;
 
 const Item = styled.button`
     border: none;
     outline: none;
+    background: none;
+    color: ${props => props.theme.text};
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    width: 100%;
+    height: 40px;
+
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1;
+
+    &:hover {
+        background: ${props => props.theme.insertMenuSelected};
+        color: black;
+    }
 `;

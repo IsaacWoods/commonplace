@@ -15,6 +15,8 @@ export const theme = {
     sidebarWidth: 240,
     sidebarColor: "rgb(247, 246, 243)",
 
+    insertMenuSelected: "rgb(220, 225, 230)",
+
     headerDepth: 500,
 };
 
