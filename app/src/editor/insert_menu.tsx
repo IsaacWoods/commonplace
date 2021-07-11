@@ -116,10 +116,12 @@ const Container = styled.div<{left: number, top: number}>`
     left: ${props => props.left}px;
     top: ${props => props.top}px;
 
-    background-color: ${props => props.theme.sidebarColor};
+    background-color: ${props => props.theme.insertMenuBackground};
     color: ${props => props.theme.text};
-
     font-family: ${props => props.theme.fontFamily};
+
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgba(10, 10, 10, 0.05), 0 3px 6px rgba(10, 10, 10, 0.1), 0 9px 24px rgba(10, 10, 10, 0.2);
 `;
 
 const List = styled.ul`
