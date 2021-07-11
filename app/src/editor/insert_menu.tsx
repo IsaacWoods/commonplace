@@ -1,9 +1,13 @@
+import * as React from 'react';
+import styled from 'styled-components';
+import { Portal } from 'react-portal';
 import { Functionality } from './functionality';
 import { InputRule } from 'prosemirror-inputrules';
 import { Schema } from 'prosemirror-model';
 import { Plugin, EditorState } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 import { findParentNode } from 'prosemirror-utils';
+import { useEditor } from '.';
 
 export class InsertMenuOpener extends Functionality {
     onOpen: () => void;
@@ -68,3 +72,35 @@ export class InsertMenuOpener extends Functionality {
         ];
     }
 }
+
+type Props = {
+    onClose: () => void;
+}
+
+export function InsertMenu(props: Props) {
+    const { view } = useEditor();
+    const position = view.coordsAtPos(view.state.selection.from);
+
+    return (
+        <Portal>
+            <Container left={position.left} top={position.top + 20}>
+                <p>Menu goes here</p>
+            </Container>
+        </Portal>
+    );
+}
+
+const Container = styled.div<{left: number, top: number}>`
+    * {
+        box-sizing: border-box;
+    }
+
+    position: absolute;
+    left: ${props => props.left}px;
+    top: ${props => props.top}px;
+
+    background-color: ${props => props.theme.sidebarColor};
+    color: ${props => props.theme.text};
+
+    font-family: ${props => props.theme.fontFamily};
+`;

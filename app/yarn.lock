@@ -409,6 +409,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-portal@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "@types/react-portal@npm:4.0.3"
+  dependencies:
+    "@types/react": "*"
+  checksum: a8d53a500eb973ac28558efe01ddd184bcf81f242161c83c367acfc26a10361f8a1e94e60e6abc42d11c6b37d0176462813dc631f2c3f8e07892952dbe7b6c42
+  languageName: node
+  linkType: hard
+
 "@types/react-router-dom@npm:^5.1.7":
   version: 5.1.7
   resolution: "@types/react-router-dom@npm:5.1.7"
@@ -928,6 +937,7 @@ __metadata:
     "@types/react": ^17.0.11
     "@types/react-dom": ^17.0.8
     "@types/react-helmet": ^6.1.1
+    "@types/react-portal": ^4.0.3
     "@types/react-router-dom": ^5.1.7
     "@types/styled-components": ^5.1.10
     html-webpack-plugin: ^5.3.2
@@ -949,6 +959,7 @@ __metadata:
     react-dom: ^17.0.2
     react-helmet: ^6.1.0
     react-is: ^17.0.2
+    react-portal: ^4.2.1
     react-router-dom: ^5.2.0
     styled-components: ^5.3.0
     styled-normalize: ^8.0.7
@@ -1815,7 +1826,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.5.6, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
+"prop-types@npm:^15.5.6, prop-types@npm:^15.5.8, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
   version: 15.7.2
   resolution: "prop-types@npm:15.7.2"
   dependencies:
@@ -2028,6 +2039,17 @@ __metadata:
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
   checksum: 3eff23f410d40ab9bc5177f147a92c7f42c356a21ecea340e0554566956d67e5e1ba56f26cc7fa22339ac3c7151744177bd6305eaa26d3cbf15f354358c9d9b6
+  languageName: node
+  linkType: hard
+
+"react-portal@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "react-portal@npm:4.2.1"
+  dependencies:
+    prop-types: ^15.5.8
+  peerDependencies:
+    react: ^15.0.0-0 || ^16.0.0-0 || ^17.0.0-0
+  checksum: 474640310e97159d53b481b9f7e274e85a1047b09fef9e3429658c3e60131bc9687071996af48169c91752f052bf75e8c65642ecfc062d9dbec75b2c589f6cb2
   languageName: node
   linkType: hard
 

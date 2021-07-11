@@ -9,7 +9,7 @@ import parseZettel from './parser';
 import { useHistory } from 'react-router-dom';
 
 import History from './history';
-import { InsertMenuOpener } from './insert_menu';
+import { InsertMenuOpener, InsertMenu } from './insert_menu';
 
 import Doc from './nodes/doc';
 import Text from './nodes/text';
@@ -45,6 +45,7 @@ type ProviderProps = {
  */
 export default function EditorProvider(props: ProviderProps) {
     const history = useHistory();
+    const [insertMenuOpen, openInsertMenu] = React.useState(false);
 
     const onClickLink = React.useCallback((href: string) => {
         if (href[0] === "/") {
@@ -56,11 +57,13 @@ export default function EditorProvider(props: ProviderProps) {
 
     const onOpenInsertMenu = React.useCallback(() => {
         console.log("Opening insert menu");
-    }, []);
+        openInsertMenu(true);
+    }, [openInsertMenu]);
 
     const onCloseInsertMenu = React.useCallback(() => {
         console.log("Closing insert menu");
-    }, []);
+        openInsertMenu(false);
+    }, [openInsertMenu]);
 
     const [functionalities] = React.useState(() => {
         return new Functionalities([
@@ -116,6 +119,7 @@ export default function EditorProvider(props: ProviderProps) {
     return (
         <EditorContext.Provider value={context}>
             {props.children}
+            {insertMenuOpen && <InsertMenu onClose={onCloseInsertMenu} />}
         </EditorContext.Provider>
     );
 }
