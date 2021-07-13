@@ -1,6 +1,15 @@
 use crate::endpoint;
 use serde::{Deserialize, Serialize};
 
+/// The first two bytes of a Zettel's value when persisted into the database will contain a version. This is to
+/// allow us to change the format of Zettels and to migrate old Zettels to the new format. This version should be
+/// incremented when:
+///    - The format of the actual Zettel data is changed
+///    - The format into which that data is serialized changes (either through a change of format, or a change in
+///      version of that format (e.g. `bincode`'s encoding is not necessarily stable between non-minor versions, or
+///      if the configuration changes)).
+pub const CURRENT_ZETTEL_FORMAT_VERSION: u16 = 0;
+
 #[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct ZettelRecord {
     pub title: String,

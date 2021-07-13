@@ -1,4 +1,4 @@
-use commonplace::{Zettel, ZettelId};
+use commonplace::{record::ZettelRecord, ZettelId};
 use std::{path::Path, sync::Mutex};
 use tantivy::{
     collector::TopDocs,
@@ -39,7 +39,7 @@ impl Index {
         Index { index, fields: Fields { id, title, content }, index_writer: Mutex::new(writer), query_parser }
     }
 
-    pub fn update_zettel(&self, id: ZettelId, new: &Zettel) {
+    pub fn update_zettel(&self, id: ZettelId, new: &ZettelRecord) {
         let mut index_writer = self.index_writer.lock().unwrap();
         index_writer.delete_term(Term::from_field_u64(self.fields.id, id.0));
         index_writer.add_document(tantivy::doc!(
