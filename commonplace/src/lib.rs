@@ -1,7 +1,16 @@
-pub mod content;
+//! This crate contains types for interacting with the `commonplace` Zettel storage framework - it describes two
+//! formats:
+//!    - The format in which Zettels are persisted into the database, encoded with `bincode`. This format is used
+//!      by the server, and tools that interface directly with the database, such as migration tools.
+//!    - The format used to describe Zettels at JSON endpoints, used predominantly by the frontend. It is more
+//!      focussed on being easy to work with, and is internally-tagged to be JSON-friendly - this is the primary
+//!      reason for there being two formats, as `bincode` is not self-describing and so cannot be internally tagged
+//!      like this.
+
+pub mod endpoint;
+pub mod record;
 
 use chrono::{Datelike, Timelike, Utc};
-use content::Block;
 use serde::{Deserialize, Serialize};
 
 /// Each Zettel is associated with a unique ID, which is based on a timestamp of when the Zettel was created,
@@ -45,10 +54,4 @@ impl ZettelId {
     pub fn decode(bytes: [u8; 8]) -> ZettelId {
         ZettelId(u64::from_be_bytes(bytes))
     }
-}
-
-#[derive(Clone, Default, Debug, Serialize, Deserialize)]
-pub struct Zettel {
-    pub title: String,
-    pub content: Vec<Block>,
 }
