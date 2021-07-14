@@ -98,6 +98,16 @@ export async function list_zettels(): Promise<ZettelResult[]> {
     }
 }
 
+export async function search_zettels(query: string): Promise<number[]> {
+    let response = await fetch(`/api/zettel.search?query=${query}`);
+
+    if (response.status === 200) {
+        return response.json();
+    } else {
+        throw new Error(`Failed to search Zettels: ${response}`);
+    }
+}
+
 type CacheState = {
     zettels: Map<number, Zettel>,
 }

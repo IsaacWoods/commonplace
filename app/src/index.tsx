@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ZettelCacheProvider } from './zettel';
 
 import Home from './scenes/home';
+import Search from './scenes/search';
 import Zettel from './scenes/zettel';
 
 const App = () => (
@@ -15,6 +16,7 @@ const App = () => (
             <Router>
                 <Switch>
                     <Route exact path="/" component={Home} />
+                    <Route path="/search" component={Search} />
                     <Route path="/zettel/:id" component={Zettel} />
                 </Switch>
             </Router>

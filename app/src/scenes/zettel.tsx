@@ -104,13 +104,13 @@ const Title = styled(TextareaAutosize)`
     font-weight: 500;
     line-height: 1.25;
 
-    background: ${(props) => props.theme.background};
+    background: ${props => props.theme.background};
     transition: background 100ms ease-in-out;
-    color: ${(props) => props.theme.text};
-    -webkit-text-fill-color: ${(props) => props.theme.text};
+    color: ${props => props.theme.text};
+    -webkit-text-fill-color: ${props => props.theme.text};
 
     &::placeholder {
-        color: ${(props) => props.theme.placeholder};
-        -webkit-text-fill-color: ${(props) => props.theme.placeholder};
+        color: ${props => props.theme.placeholder};
+        -webkit-text-fill-color: ${props => props.theme.placeholder};
     }
 `;
