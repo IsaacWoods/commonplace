@@ -5,6 +5,7 @@ import Scene from '../components/scene';
 import Header from '../components/header';
 import CenteredContent from '../components/centered';
 import Flex from '../components/flex';
+import ZettelEntry from '../components/zettel_entry';
 import { search_zettels } from '../zettel';
 
 export default function Search() {
@@ -20,7 +21,7 @@ export default function Search() {
     }, [query]);
 
     const resultList = results.map((id) => {
-        return (<li key={id}><NavLink to={`/zettel/${id}`}>{id}</NavLink></li>);
+        return (<li key={id}><ZettelEntry id={id} /></li>);
     });
 
     return (
