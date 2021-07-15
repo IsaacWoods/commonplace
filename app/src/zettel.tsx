@@ -15,8 +15,9 @@ export type Block = {
 }
 
 export type Inline = {
-    type: "Text",
+    type: "Text" | "Link",
     text?: string,
+    href?: string,
     marks?: Mark[],
 }
 
@@ -24,12 +25,7 @@ export type ListItem = {
     blocks: Block[],
 }
 
-export type MarkType = "Bold" | "Italic" | "Strikethrough" | "Highlight" | "Link";
-
-export type Mark = {
-    type: MarkType,
-    href?: string,
-}
+export type Mark = "Bold" | "Italic" | "Strikethrough" | "Highlight";
 
 // This is returned by endpoints that are not called for a specific Zettel ID. The title and content may be
 // missing, depending on the endpoint and various options, to save them being fetched and sent if not needed.

@@ -26,17 +26,15 @@ pub struct ListItem {
 #[serde(tag = "type")]
 pub enum Inline {
     Text { text: String, marks: Vec<Mark> },
+    Link { text: String, href: String, marks: Vec<Mark> },
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
-#[serde(tag = "type")]
 pub enum Mark {
     Bold,
     Italic,
     Strikethrough,
     Highlight,
-    // TODO: explore making `Link` its own type of `Inline`. This has advantages in the persisted format.
-    Link { href: String },
 }
 
 impl From<record::ZettelRecord> for Zettel {
@@ -76,7 +74,10 @@ impl From<record::Inline> for Inline {
     fn from(inline: record::Inline) -> Inline {
         match inline {
             record::Inline::Text { text, marks } => {
-                Inline::Text { text, marks: marks.into_iter().map(|mark| Mark::from(mark)).collect() }
+                Inline::Text { text, marks: marks.into_iter().map(Mark::from).collect() }
+            }
+            record::Inline::Link { text, href, marks } => {
+                Inline::Link { text, href, marks: marks.into_iter().map(Mark::from).collect() }
             }
         }
     }
@@ -89,7 +90,6 @@ impl From<record::Mark> for Mark {
             record::Mark::Italic => Mark::Italic,
             record::Mark::Strikethrough => Mark::Strikethrough,
             record::Mark::Highlight => Mark::Highlight,
-            record::Mark::Link { href } => Mark::Link { href },
         }
     }
 }

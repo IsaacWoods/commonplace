@@ -1,5 +1,5 @@
 import { Node, Mark as ProseMark } from 'prosemirror-model';
-import { ZettelContent, Block, Inline, ListItem, Mark, MarkType } from '../zettel';
+import { ZettelContent, Block, Inline, ListItem, Mark } from '../zettel';
 
 export default function serializeDoc(content: Node): ZettelContent {
     let blocks = [];
@@ -40,11 +40,21 @@ function serializeBlock(node: Node): Block {
 function serializeInline(node: Node): Inline {
     switch (node.type.name) {
         case "text":
-            return {
-                type: "Text",
-                text: node.text,
-                marks: node.marks.map((mark) => serializeMark(mark)),
-            };
+            const { marks, link_href } = serializeMarks(node.marks);
+            if (link_href === null) {
+                return {
+                    type: "Text",
+                    text: node.text,
+                    marks,
+                };
+            } else {
+                return {
+                    type: "Link",
+                    text: node.text,
+                    href: link_href,
+                    marks,
+                };
+            }
         default:
             throw new Error(`Unrecognized node type while serializing an inline: ${node.type.name}`);
     }
@@ -56,22 +66,30 @@ function serializeListItem(node: Node): ListItem {
     return { blocks };
 }
 
-function serializeMark(mark: ProseMark): Mark {
-    switch (mark.type.name) {
-        case "bold":
-            return { type: "Bold" };
-        case "italic":
-            return { type: "Italic" };
-        case "strikethrough":
-            return { type: "Strikethrough" };
-        case "highlight":
-            return { type: "Highlight" };
-        case "link":
-            return {
-                type: "Link",
-                href: mark.attrs.href,
-            };
-        default:
-            throw new Error(`Unrecognized mark type: ${mark.type.name}`);
-    }
+type MarksParse = {
+    marks: Mark[],
+    link_href: null | string,
+}
+
+function serializeMarks(prose_marks: ProseMark[]): MarksParse {
+    let link_href = null;
+    const marks = prose_marks.flatMap((mark): Mark[] => {
+        switch (mark.type.name) {
+            case "bold":
+                return ["Bold"];
+            case "italic":
+                return ["Italic"];
+            case "strikethrough":
+                return ["Strikethrough"];
+            case "highlight":
+                return ["Highlight"];
+            case "link":
+                link_href = mark.attrs.href;
+                return [];
+            default:
+                throw new Error(`Unrecognized mark type: ${mark.type.name}`);
+        }
+    });
+
+    return { marks, link_href };
 }

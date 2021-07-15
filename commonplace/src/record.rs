@@ -34,6 +34,7 @@ pub struct ListItem {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum Inline {
     Text { text: String, marks: Vec<Mark> },
+    Link { text: String, href: String, marks: Vec<Mark> },
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -42,8 +43,6 @@ pub enum Mark {
     Italic,
     Strikethrough,
     Highlight,
-    // TODO: explore making `Link` its own type of `Inline`. Simple marks could then be a bitfield.
-    Link { href: String },
 }
 
 impl From<endpoint::Zettel> for ZettelRecord {
@@ -85,7 +84,10 @@ impl From<endpoint::Inline> for Inline {
     fn from(inline: endpoint::Inline) -> Inline {
         match inline {
             endpoint::Inline::Text { text, marks } => {
-                Inline::Text { text, marks: marks.into_iter().map(|mark| Mark::from(mark)).collect() }
+                Inline::Text { text, marks: marks.into_iter().map(Mark::from).collect() }
+            }
+            endpoint::Inline::Link { text, href, marks } => {
+                Inline::Link { text, href, marks: marks.into_iter().map(Mark::from).collect() }
             }
         }
     }
@@ -98,7 +100,6 @@ impl From<endpoint::Mark> for Mark {
             endpoint::Mark::Italic => Mark::Italic,
             endpoint::Mark::Strikethrough => Mark::Strikethrough,
             endpoint::Mark::Highlight => Mark::Highlight,
-            endpoint::Mark::Link { href } => Mark::Link { href },
         }
     }
 }

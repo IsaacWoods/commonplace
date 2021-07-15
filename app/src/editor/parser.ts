@@ -25,27 +25,30 @@ function parseBlock(schema: Schema, block: Block): Node {
 
 function parseInline(schema: Schema, inline: Inline) {
     switch (inline.type) {
-        case "Text":
+        case "Text": {
             const marks = inline.marks.map((mark) => parseMark(schema, mark));
             return schema.text(inline.text, marks);
+        }
+        case "Link": {
+            const marks = inline.marks.map((mark) => parseMark(schema, mark));
+            return schema.text(inline.text, [schema.mark("link", { href: inline.href }), ...marks]);
+        }
         default:
             throw new Error(`Can't find parser for inline of type ${inline.type}`);
     }
 }
 
 function parseMark(schema: Schema, mark: Mark): ProseMark {
-  switch (mark.type) {
-    case "Bold":
-      return schema.mark("bold");
-    case "Italic":
-      return schema.mark("italic");
-    case "Strikethrough":
-      return schema.mark("strikethrough");
-    case "Highlight":
-      return schema.mark("highlight");
-    case "Link":
-      return schema.mark("link", { href: mark.href });
-    default:
-      throw new Error(`Invalid mark with name: ${mark}`);
-  }
+    switch (mark) {
+        case "Bold":
+            return schema.mark("bold");
+        case "Italic":
+            return schema.mark("italic");
+        case "Strikethrough":
+            return schema.mark("strikethrough");
+        case "Highlight":
+            return schema.mark("highlight");
+        default:
+            throw new Error(`Invalid mark with name: ${mark}`);
+    }
 }
