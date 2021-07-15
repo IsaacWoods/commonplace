@@ -60,15 +60,15 @@ impl From<endpoint::Block> for Block {
     fn from(block: endpoint::Block) -> Block {
         match block {
             endpoint::Block::Paragraph { inlines } => {
-                Block::Paragraph { inlines: inlines.into_iter().map(|inline| Inline::from(inline)).collect() }
+                Block::Paragraph { inlines: inlines.into_iter().map(Inline::from).collect() }
             }
             endpoint::Block::Heading { level, inlines } => {
-                Block::Heading { level, inlines: inlines.into_iter().map(|inline| Inline::from(inline)).collect() }
+                Block::Heading { level, inlines: inlines.into_iter().map(Inline::from).collect() }
             }
             endpoint::Block::Image { src } => Block::Image { src },
             endpoint::Block::Divider => Block::Divider,
             endpoint::Block::List { items } => {
-                Block::List { items: items.into_iter().map(|item| ListItem::from(item)).collect() }
+                Block::List { items: items.into_iter().map(ListItem::from).collect() }
             }
         }
     }
@@ -76,7 +76,7 @@ impl From<endpoint::Block> for Block {
 
 impl From<endpoint::ListItem> for ListItem {
     fn from(item: endpoint::ListItem) -> ListItem {
-        ListItem { blocks: item.blocks.into_iter().map(|block| Block::from(block)).collect() }
+        ListItem { blocks: item.blocks.into_iter().map(Block::from).collect() }
     }
 }
 

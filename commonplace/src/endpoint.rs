@@ -39,10 +39,7 @@ pub enum Mark {
 
 impl From<record::ZettelRecord> for Zettel {
     fn from(record: record::ZettelRecord) -> Zettel {
-        Zettel {
-            title: record.title,
-            content: record.content.into_iter().map(|block| Block::from(block)).collect(),
-        }
+        Zettel { title: record.title, content: record.content.into_iter().map(Block::from).collect() }
     }
 }
 
@@ -50,15 +47,15 @@ impl From<record::Block> for Block {
     fn from(block: record::Block) -> Block {
         match block {
             record::Block::Paragraph { inlines } => {
-                Block::Paragraph { inlines: inlines.into_iter().map(|inline| Inline::from(inline)).collect() }
+                Block::Paragraph { inlines: inlines.into_iter().map(Inline::from).collect() }
             }
             record::Block::Heading { level, inlines } => {
-                Block::Heading { level, inlines: inlines.into_iter().map(|inline| Inline::from(inline)).collect() }
+                Block::Heading { level, inlines: inlines.into_iter().map(Inline::from).collect() }
             }
             record::Block::Image { src } => Block::Image { src },
             record::Block::Divider => Block::Divider,
             record::Block::List { items } => {
-                Block::List { items: items.into_iter().map(|item| ListItem::from(item)).collect() }
+                Block::List { items: items.into_iter().map(ListItem::from).collect() }
             }
         }
     }
@@ -66,7 +63,7 @@ impl From<record::Block> for Block {
 
 impl From<record::ListItem> for ListItem {
     fn from(item: record::ListItem) -> ListItem {
-        ListItem { blocks: item.blocks.into_iter().map(|block| Block::from(block)).collect() }
+        ListItem { blocks: item.blocks.into_iter().map(Block::from).collect() }
     }
 }
 
