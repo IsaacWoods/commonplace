@@ -13,7 +13,6 @@ pub const CURRENT_ZETTEL_FORMAT_VERSION: u16 = 0;
 #[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct ZettelRecord {
     pub title: String,
-    pub pinned: bool,
     pub content: Vec<Block>,
 }
 
@@ -47,12 +46,7 @@ pub enum Mark {
 
 impl From<endpoint::Zettel> for ZettelRecord {
     fn from(zettel: endpoint::Zettel) -> ZettelRecord {
-        ZettelRecord {
-            title: zettel.title,
-            // TODO
-            pinned: false,
-            content: zettel.content.into_iter().map(|block| Block::from(block)).collect(),
-        }
+        ZettelRecord { title: zettel.title, content: zettel.content.into_iter().map(Block::from).collect() }
     }
 }
 
