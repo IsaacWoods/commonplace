@@ -20,10 +20,6 @@ export default function Search() {
         setResults(await search_zettels(query));
     }, [query]);
 
-    const resultList = results.map((id) => {
-        return (<li key={id}><ZettelEntry id={id} /></li>);
-    });
-
     return (
         <Scene>
             <Header title="Search" />
@@ -33,7 +29,7 @@ export default function Search() {
                     <button onClick={onSearch}>Search</button>
                 </Flex>
                 <ul>
-                    {resultList}
+                    {results.map(id => (<li key={id}><ZettelEntry id={id} /></li>))}
                 </ul>
             </CenteredContent>
         </Scene>
