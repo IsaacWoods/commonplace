@@ -5,6 +5,7 @@ import Scene from '../components/scene';
 import Header from '../components/header';
 import CenteredContent from '../components/centered';
 import Flex from '../components/flex';
+import Button from '../components/button';
 import ZettelEntry from '../components/zettel_entry';
 import { search_zettels } from '../zettel';
 
@@ -24,9 +25,9 @@ export default function Search() {
         <Scene>
             <Header title="Search" />
             <CenteredContent>
-                <Flex>
+                <Flex align="center">
                     <Searchbar placeholder="Search for something..." onChange={onChangeQuery} />
-                    <button onClick={onSearch}>Search</button>
+                    <Button onClick={onSearch}>Search</Button>
                 </Flex>
                 <ul>
                     {results.map(id => (<li key={id}><ZettelEntry id={id} /></li>))}

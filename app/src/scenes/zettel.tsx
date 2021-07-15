@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import Scene from '../components/scene';
 import Header, { Action } from '../components/header';
+import Button from '../components/button';
 import CenteredContent from '../components/centered';
 import Flex from '../components/flex';
 import TextareaAutosize from 'react-autosize-textarea';
@@ -66,7 +67,7 @@ function ZettelEditor(props: { id: number }) {
     return (
         <>
             <Header title={zettel ? zettel.title : "Loading Zettel..."} actions={
-                <Action><button onClick={onSave}>Save</button></Action>
+                <Action><Button onClick={onSave}>Save</Button></Action>
             } />
             <CenteredContent>
                 { zettel ?

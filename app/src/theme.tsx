@@ -18,6 +18,9 @@ export const theme = {
     insertMenuBackground: "#ffffff",
     insertMenuSelected: "rgb(220, 225, 230)",
 
+    buttonBackground: "#ffffff",
+    buttonSelected: "rgb(220, 225, 230)",
+
     headerDepth: 500,
 };
 

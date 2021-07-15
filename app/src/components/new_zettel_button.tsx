@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Button from './button';
 import { useHistory } from 'react-router-dom';
 import { create_zettel } from '../zettel';
 
@@ -10,5 +11,5 @@ export default function NewZettelButton() {
         history.push(`/zettel/${id}`);
     };
 
-    return (<button onClick={onClick}>New Zettel</button>);
+    return (<Button onClick={onClick}>New Zettel</Button>);
 }
