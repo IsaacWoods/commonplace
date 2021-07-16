@@ -18,6 +18,8 @@ function parseBlock(schema: Schema, block: Block): Node {
             return schema.node("heading", { level: block.level }, block.inlines.map((inline) => parseInline(schema, inline)));
         case "Divider":
             return schema.node("divider", null, []);
+        case "List":
+            return schema.node("list", null, block.items.map((item) => parseListItem(schema, item)));
         default:
             throw new Error(`Can't find parser for block of type ${block.type}`);
     }
@@ -36,6 +38,10 @@ function parseInline(schema: Schema, inline: Inline) {
         default:
             throw new Error(`Can't find parser for inline of type ${inline.type}`);
     }
+}
+
+function parseListItem(schema: Schema, item: ListItem): Node {
+    return schema.node("list_item", null, item.blocks.map((block) => parseBlock(schema, block)));
 }
 
 function parseMark(schema: Schema, mark: Mark): ProseMark {
