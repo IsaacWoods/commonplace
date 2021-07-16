@@ -26,7 +26,10 @@ export default class Heading extends Functionality {
 
     commands(schema) {
         return {
-            insertHeader: ({ level }) => setBlockType(schema.nodes.heading, { level }),
+            insertHeader: ({ level }) => (state, dispatch) => {
+                if (dispatch) dispatch(state.tr.replaceSelectionWith(schema.nodes.heading.create({ level })));
+                return true;
+            }
         }
     }
 }
