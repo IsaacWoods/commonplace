@@ -66,7 +66,14 @@ export async function fetch_zettel(id: number): Promise<Zettel> {
     }
 }
 
-export async function update_zettel(id: number, zettel: Zettel) {
+// If either the title or content is `undefined`, it will not be updated. This can be used to avoid sending data
+// that has not changed.
+type ZettelUpdate = {
+    title?: string,
+    content?: ZettelContent,
+}
+
+export async function update_zettel(id: number, update: ZettelUpdate) {
     console.log("Updating zettel: ", id);
 
     let response = await fetch(`/api/zettel.update/${id}`, {
@@ -74,7 +81,7 @@ export async function update_zettel(id: number, zettel: Zettel) {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(zettel),
+        body: JSON.stringify(update),   // `stringify` will skip undefined values, so this works for our purposes
     });
 
     if (response.status === 200) {

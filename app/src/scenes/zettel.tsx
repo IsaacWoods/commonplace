@@ -17,6 +17,14 @@ function ZettelEditor(props: { id: number }) {
     const zettelCache = React.useContext(ZettelCache);
     const [zettel, setZettel] = React.useState(null);
 
+    /*
+     * We independently track whether the title and content are dirty - whether they've been changed since the last
+     * update was sent. This allows us to avoid sending an update at all if one is not needed, and if one is, only
+     * includes the fields that have actually changed.
+     */
+    const [isTitleDirty, setTitleDirty] = React.useState(false);
+    const [isContentDirty, setContentDirty] = React.useState(false);
+
     React.useEffect(() => {
         // See if the Zettel is already in the cache
         const zettel = zettelCache.state.zettels.get(props.id);
@@ -51,18 +59,27 @@ function ZettelEditor(props: { id: number }) {
 
     const onChange = React.useCallback((content: ZettelContent) => {
         setZettel((zettel) => ({ ...zettel, content }));
+        setContentDirty(true);
     }, [setZettel]);
 
     const onChangeTitle = React.useCallback((event: React.SyntheticEvent<HTMLTextAreaElement>) => {
         setZettel((zettel) => ({ ...zettel, title: (event.target as HTMLTextAreaElement).value }));
+        setTitleDirty(true);
     }, [setZettel]);
 
     const onSave = React.useCallback(() => {
-        if (zettel) {
-            update_zettel(props.id, zettel);
+        if (zettel && (isTitleDirty || isContentDirty)) {
+            const update = {
+                title: isTitleDirty ? zettel.title : undefined,
+                content: isContentDirty ? zettel.content: undefined,
+            };
+            update_zettel(props.id, update);
             zettelCache.dispatch({ type: "updateZettel", id: props.id, zettel });
+
+            setTitleDirty(false);
+            setContentDirty(false);
         }
-    }, [props.id, zettel, update_zettel]);
+    }, [props.id, zettel, update_zettel, isTitleDirty, isContentDirty]);
 
     return (
         <>
