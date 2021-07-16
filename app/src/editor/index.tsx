@@ -57,12 +57,10 @@ export default function EditorProvider(props: ProviderProps) {
     }, [history]);
 
     const onOpenInsertMenu = React.useCallback(() => {
-        console.log("Opening insert menu");
         openInsertMenu(true);
     }, [openInsertMenu]);
 
     const onCloseInsertMenu = React.useCallback(() => {
-        console.log("Closing insert menu");
         openInsertMenu(false);
     }, [openInsertMenu]);
 
