@@ -1,5 +1,7 @@
-use crate::endpoint;
+use crate::{endpoint, ZettelId};
+use bincode::Options;
 use serde::{Deserialize, Serialize};
+use std::convert::TryInto;
 
 /// The first two bytes of a Zettel's value when persisted into the database will contain a version. This is to
 /// allow us to change the format of Zettels and to migrate old Zettels to the new format. This version should be
@@ -13,7 +15,31 @@ pub const CURRENT_ZETTEL_FORMAT_VERSION: u16 = 0;
 #[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct ZettelRecord {
     pub title: String,
+    // TODO: it kinda sucks that we need a whole string
+    pub emoji: Option<String>,
     pub content: Vec<Block>,
+    pub mentions: Vec<ZettelId>,
+}
+
+#[derive(Clone, Debug)]
+pub enum DeserializeError {
+    WrongVersion,
+}
+
+impl ZettelRecord {
+    pub fn serialize(&self) -> Vec<u8> {
+        let mut bytes = Vec::from(u16::to_le_bytes(CURRENT_ZETTEL_FORMAT_VERSION));
+        bytes.extend(bincode::DefaultOptions::new().serialize(self).unwrap());
+        bytes
+    }
+
+    pub fn deserialize(bytes: &[u8]) -> Result<ZettelRecord, DeserializeError> {
+        let format_version = u16::from_le_bytes(bytes[0..2].try_into().unwrap());
+        if format_version != CURRENT_ZETTEL_FORMAT_VERSION {
+            return Err(DeserializeError::WrongVersion);
+        }
+        Ok(bincode::DefaultOptions::new().deserialize(&bytes[2..]).unwrap())
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -46,7 +72,12 @@ pub enum Mark {
 
 impl From<endpoint::Zettel> for ZettelRecord {
     fn from(zettel: endpoint::Zettel) -> ZettelRecord {
-        ZettelRecord { title: zettel.title, content: zettel.content.into_iter().map(Block::from).collect() }
+        ZettelRecord {
+            title: zettel.title,
+            emoji: None,
+            content: zettel.content.into_iter().map(Block::from).collect(),
+            mentions: vec![],
+        }
     }
 }
 

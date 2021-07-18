@@ -10,6 +10,5 @@ rocket = { version = "0.5.0-rc.1", features = ["json"] }
 tokio = "1"
 commonplace = { path = "../commonplace" }
 serde = "1"
-bincode = "1"
 sled = "0.34"
 tantivy = "0.15"

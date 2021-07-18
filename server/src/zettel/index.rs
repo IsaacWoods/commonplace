@@ -54,7 +54,7 @@ impl Index {
     }
 
     pub fn update_zettel(&self, id: ZettelId, new: &ZettelRecord) {
-        let mut index_writer = self.index_writer.lock().unwrap();
+        let index_writer = self.index_writer.lock().unwrap();
         index_writer.delete_term(Term::from_field_u64(self.fields.id, id.0));
         index_writer.add_document(tantivy::doc!(
             self.fields.id => id.0,

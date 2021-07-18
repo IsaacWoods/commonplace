@@ -9,3 +9,4 @@ description = "Library for interacting with the Commonplace note storing system"
 [dependencies]
 chrono = "0.4"
 serde = { version = "1", features = ["derive"] }
+bincode = "1"
