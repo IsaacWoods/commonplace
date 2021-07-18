@@ -1360,6 +1360,7 @@ dependencies = [
  "serde",
  "sled",
  "tantivy",
+ "tokio",
 ]
 
 [[package]]

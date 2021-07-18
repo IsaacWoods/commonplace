@@ -11,12 +11,16 @@ use rocket::{
     Data,
     Request,
 };
-use std::path::Path;
+use std::{path::Path, sync::Arc};
+use zettel::Index;
 
 #[launch]
 pub fn rocket() -> _ {
+    let index = Arc::new(Index::create());
+    tokio::spawn(zettel::index::commit_index(index.clone()));
+
     rocket::build()
-        .manage(zettel::ZettelStore::new())
+        .manage(zettel::ZettelStore::new(index))
         .mount("/api", routes![zettel::create, zettel::fetch, zettel::list, zettel::search, zettel::update])
         .mount("/static", FileServer::from(relative!("../app/dist")))
         .mount("/", AppPage(Path::new(relative!("../app/dist/index.html"))))

@@ -4,11 +4,11 @@ use commonplace::{
     record::{Block, ZettelRecord, CURRENT_ZETTEL_FORMAT_VERSION},
     ZettelId,
 };
-use std::{convert::TryInto, ops::Deref};
+use std::{convert::TryInto, ops::Deref, sync::Arc};
 
 pub struct ZettelStore {
     tree: sled::Tree,
-    index: Index,
+    index: Arc<Index>,
     /// It's important we use the `serialize` and `deserialize` functions on `DefaultOptions`, instead of the free
     /// functions in `bincode`, as the options differ. Specifically, this version will use the varint encoding for
     /// lengths, which will save a lot of space in our usecase, as we have many vectors with very short lengths.
@@ -16,10 +16,10 @@ pub struct ZettelStore {
 }
 
 impl ZettelStore {
-    pub fn new() -> ZettelStore {
+    pub fn new(index: Arc<Index>) -> ZettelStore {
         ZettelStore {
             tree: sled::open("db").unwrap().open_tree("zettels").unwrap(),
-            index: Index::create(),
+            index,
             bincode: bincode::DefaultOptions::new(),
         }
     }

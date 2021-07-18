@@ -1,6 +1,7 @@
-mod index;
+pub mod index;
 mod store;
 
+pub use index::Index;
 pub use store::ZettelStore;
 
 use commonplace::{

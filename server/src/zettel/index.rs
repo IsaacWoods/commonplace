@@ -1,5 +1,12 @@
 use commonplace::{record::ZettelRecord, ZettelId};
-use std::{path::Path, sync::Mutex};
+use std::{
+    path::Path,
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc,
+        Mutex,
+    },
+};
 use tantivy::{
     collector::TopDocs,
     directory::MmapDirectory,
@@ -17,6 +24,7 @@ struct Fields {
 }
 
 pub struct Index {
+    pub commit_needed: AtomicBool,
     index: TantivyIndex,
     fields: Fields,
     index_writer: Mutex<IndexWriter>,
@@ -36,7 +44,13 @@ impl Index {
         let writer = index.writer(10_000_000).unwrap();
         let query_parser = QueryParser::for_index(&index, vec![title, content]);
 
-        Index { index, fields: Fields { id, title, content }, index_writer: Mutex::new(writer), query_parser }
+        Index {
+            commit_needed: AtomicBool::new(false),
+            index,
+            fields: Fields { id, title, content },
+            index_writer: Mutex::new(writer),
+            query_parser,
+        }
     }
 
     pub fn update_zettel(&self, id: ZettelId, new: &ZettelRecord) {
@@ -47,7 +61,8 @@ impl Index {
             self.fields.title => new.title.clone(),
             self.fields.content => "",
         ));
-        index_writer.commit().unwrap();
+
+        self.commit_needed.store(true, Ordering::SeqCst);
     }
 
     pub fn search(&self, query: &str) -> Vec<ZettelId> {
@@ -63,5 +78,18 @@ impl Index {
                 ZettelId(doc.get_first(self.fields.id).unwrap().u64_value().unwrap())
             })
             .collect()
+    }
+}
+
+/// Committing the index is way too slow to be doing on every Zettel update, as it pushes up the response time of
+/// update requests. Instead, we run a background task that periodically commits the index if needed - search
+/// results are not available until this happens, but I think that's okay for our purposes.
+pub async fn commit_index(index: Arc<Index>) {
+    let mut interval = tokio::time::interval(tokio::time::Duration::from_secs(60));
+    loop {
+        interval.tick().await;
+        if index.commit_needed.compare_exchange(true, false, Ordering::SeqCst, Ordering::SeqCst).is_ok() {
+            index.index_writer.lock().unwrap().commit().unwrap();
+        }
     }
 }
