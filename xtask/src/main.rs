@@ -17,16 +17,22 @@ fn main() -> Result<()> {
             Ok(())
         }
 
-        flags::TaskCmd::Dist(_) => {
-            webpack_app()?;
+        flags::TaskCmd::Dist(dist) => {
+            webpack_app(dist.prod)?;
             Ok(())
         }
     }
 }
 
-fn webpack_app() -> Result<()> {
+fn webpack_app(prod: bool) -> Result<()> {
     let _app = pushd("app")?;
-    cmd!("yarn webpack").run()?;
+
+    if prod {
+        cmd!("yarn webpack --config webpack.production.js").run()?;
+    } else {
+        cmd!("yarn webpack --config webpack.dev.js").run()?;
+    }
+
     Ok(())
 }
 
