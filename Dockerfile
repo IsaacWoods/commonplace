@@ -17,7 +17,9 @@ WORKDIR app
 COPY app/package.json package.json
 COPY app/yarn.lock yarn.lock
 RUN yarn install
-COPY app/ .
+COPY app/src/ ./src/
+COPY app/webpack.common.js app/webpack.production.js app/tsconfig.json ./
+# COPY app/ .
 RUN yarn webpack --config webpack.production.js
 
 # TODO: use a lighter image? Alpine would require us to build against musl
