@@ -21,12 +21,18 @@ export default function Search() {
         setResults(await search_zettels(query));
     }, [query]);
 
+    const onKeyUp = React.useCallback((event) => {
+        if (event.key === "Enter") {
+            onSearch();
+        }
+    }, [onSearch]);
+
     return (
         <Scene>
             <Header title="Search" />
             <CenteredContent>
                 <Flex align="center">
-                    <Searchbar autoFocus placeholder="Search for something..." onChange={onChangeQuery} />
+                    <Searchbar autoFocus placeholder="Search for something..." onChange={onChangeQuery} onKeyUp={onKeyUp} />
                     <Button onClick={onSearch}>Search</Button>
                 </Flex>
                 <ul>
