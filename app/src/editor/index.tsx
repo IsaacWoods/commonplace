@@ -23,6 +23,8 @@ import Italic from './marks/italic';
 import Highlight from './marks/highlight';
 import Strikethrough from './marks/strikethrough';
 import Link from './marks/link';
+import Subscript from './marks/subscript';
+import Superscript from './marks/superscript';
 
 type Editor = {
     state: EditorState,
@@ -88,6 +90,8 @@ export default function EditorProvider(props: ProviderProps) {
              new Highlight(),
              new Strikethrough(),
              new Link(onClickLink),
+             new Subscript(),
+             new Superscript(),
         ]);
     });
 

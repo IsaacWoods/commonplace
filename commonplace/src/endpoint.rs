@@ -35,6 +35,8 @@ pub enum Mark {
     Italic,
     Strikethrough,
     Highlight,
+    Subscript,
+    Superscript,
 }
 
 impl From<record::ZettelRecord> for Zettel {
@@ -87,6 +89,8 @@ impl From<record::Mark> for Mark {
             record::Mark::Italic => Mark::Italic,
             record::Mark::Strikethrough => Mark::Strikethrough,
             record::Mark::Highlight => Mark::Highlight,
+            record::Mark::Subscript => Mark::Subscript,
+            record::Mark::Superscript => Mark::Superscript,
         }
     }
 }
