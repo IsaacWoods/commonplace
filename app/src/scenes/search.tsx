@@ -26,7 +26,7 @@ export default function Search() {
             <Header title="Search" />
             <CenteredContent>
                 <Flex align="center">
-                    <Searchbar placeholder="Search for something..." onChange={onChangeQuery} />
+                    <Searchbar autoFocus placeholder="Search for something..." onChange={onChangeQuery} />
                     <Button onClick={onSearch}>Search</Button>
                 </Flex>
                 <ul>
