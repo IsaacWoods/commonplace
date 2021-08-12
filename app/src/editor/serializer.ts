@@ -83,6 +83,10 @@ function serializeMarks(prose_marks: ProseMark[]): MarksParse {
                 return ["Strikethrough"];
             case "highlight":
                 return ["Highlight"];
+            case "subscript":
+                return ["Subscript"];
+            case "superscript":
+                return ["Superscript"];
             case "link":
                 link_href = mark.attrs.href;
                 return [];

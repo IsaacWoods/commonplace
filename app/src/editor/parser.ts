@@ -54,6 +54,10 @@ function parseMark(schema: Schema, mark: Mark): ProseMark {
             return schema.mark("strikethrough");
         case "Highlight":
             return schema.mark("highlight");
+        case "Subscript":
+            return schema.mark("subscript");
+        case "Superscript":
+            return schema.mark("superscript");
         default:
             throw new Error(`Invalid mark with name: ${mark}`);
     }

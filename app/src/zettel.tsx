@@ -25,7 +25,7 @@ export type ListItem = {
     blocks: Block[],
 }
 
-export type Mark = "Bold" | "Italic" | "Strikethrough" | "Highlight";
+export type Mark = "Bold" | "Italic" | "Strikethrough" | "Highlight" | "Subscript" | "Superscript";
 
 // This is returned by endpoints that are not called for a specific Zettel ID. The title and content may be
 // missing, depending on the endpoint and various options, to save them being fetched and sent if not needed.
