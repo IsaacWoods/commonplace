@@ -16,6 +16,8 @@ FROM node as app_builder
 WORKDIR app
 COPY app/package.json package.json
 COPY app/yarn.lock yarn.lock
+RUN npm install -g yarn
+RUN yarn set version berry
 RUN yarn install
 COPY app/src/ ./src/
 COPY app/webpack.common.js app/webpack.production.js app/tsconfig.json ./
