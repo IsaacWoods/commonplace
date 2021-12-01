@@ -30,7 +30,12 @@ FROM --platform=$BUILDPLATFORM rustlang/rust:nightly as server_builder
             *) exit 1 ;; \
         esac; \
         cargo build --release --target $TARGET
-    RUN cargo install --path .
+    RUN case "${TARGETPLATFORM}" in \
+            "linux/amd64")  TARGET=x86_64-unknown-linux-musl ;; \
+            "linux/arm64")  TARGET=aarch64-unknown-linux-musl ;; \
+            *) exit 1 ;; \
+        esac; \
+        cargo install --path . --target $TARGET
 
 FROM --platform=$BUILDPLATFORM node as app_builder
     WORKDIR app
