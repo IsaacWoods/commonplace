@@ -51,6 +51,20 @@ pub enum Block {
     List { items: Vec<ListItem> },
 }
 
+impl Block {
+    pub fn content(&self) -> String {
+        match self {
+            Block::Paragraph { inlines } => {
+                inlines.iter().fold(String::new(), |current, inline| current + " " + &inline.content())
+            }
+            // Block::List { items } => {
+            //     items.iter().fold(String::new(), |current, item| current + " " + item.content())
+            // }
+            _ => String::new(),
+        }
+    }
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ListItem {
     pub blocks: Vec<Block>,
@@ -60,6 +74,15 @@ pub struct ListItem {
 pub enum Inline {
     Text { text: String, marks: Vec<Mark> },
     Link { text: String, href: String, marks: Vec<Mark> },
+}
+
+impl Inline {
+    pub fn content(&self) -> String {
+        match self {
+            Inline::Text { text, .. } => text.clone(),
+            Inline::Link { text, .. } => text.clone(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

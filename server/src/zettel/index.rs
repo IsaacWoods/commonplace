@@ -59,7 +59,7 @@ impl Index {
         index_writer.add_document(tantivy::doc!(
             self.fields.id => id.0,
             self.fields.title => new.title.clone(),
-            self.fields.content => "",
+            self.fields.content => new.content.iter().fold(String::new(), |current, block| current + " " + &block.content()),
         ));
 
         self.commit_needed.store(true, Ordering::SeqCst);
