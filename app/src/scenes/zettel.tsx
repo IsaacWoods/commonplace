@@ -72,7 +72,7 @@ function ZettelEditor(props: { id: number }) {
 }
 
 export default function Zettel() {
-    const id = parseInt(useParams<{ id: string }>().id);
+    const id = parseInt(useParams().id);
     return (
         <Scene>
             <ZettelEditor key={id} id={id} />

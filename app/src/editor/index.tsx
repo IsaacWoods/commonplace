@@ -6,7 +6,7 @@ import { Schema } from 'prosemirror-model';
 import Functionalities, { Command, CommandConstructor } from './functionality';
 import type { ZettelContent } from '../zettel';
 import parseZettel from './parser';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import History from './history';
 import { InsertMenuOpener, InsertMenu } from './insert_menu';
@@ -47,16 +47,16 @@ type ProviderProps = {
  * The actual Prosemirror DOM is rendered by `EditorView`.
  */
 export default function EditorProvider(props: ProviderProps) {
-    const history = useHistory();
+    const navigate = useNavigate();
     const [insertMenuOpen, openInsertMenu] = React.useState(false);
 
     const onClickLink = React.useCallback((href: string) => {
         if (href[0] === "/") {
-            history.push(href);
+            navigate(href);
         } else {
             window.open(href, "_blank");
         }
-    }, [history]);
+    }, [navigate]);
 
     const onOpenInsertMenu = React.useCallback(() => {
         openInsertMenu(true);

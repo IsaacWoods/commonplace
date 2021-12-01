@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { GlobalStyle, theme } from './theme';
 import { ThemeProvider } from 'styled-components';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ZettelCacheProvider } from './zettel';
 
 import Home from './scenes/home';
@@ -14,11 +14,11 @@ const App = () => (
         <GlobalStyle />
         <ZettelCacheProvider>
             <Router>
-                <Switch>
-                    <Route exact path="/" component={Home} />
-                    <Route path="/search" component={Search} />
-                    <Route path="/zettel/:id" component={Zettel} />
-                </Switch>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/search" element={<Search />} />
+                    <Route path="/zettel/:id" element={<Zettel />} />
+                </Routes>
             </Router>
         </ZettelCacheProvider>
     </ThemeProvider>

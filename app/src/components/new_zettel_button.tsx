@@ -1,14 +1,14 @@
 import * as React from 'react';
 import Button from './button';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { create_zettel } from '../zettel';
 
 export default function NewZettelButton() {
-    let history = useHistory();
+    let navigate = useNavigate();
 
     const onClick = async () => {
         const id = await create_zettel();
-        history.push(`/zettel/${id}`);
+        navigate(`/zettel/${id}`);
     };
 
     return (<Button onClick={onClick}>New Zettel</Button>);

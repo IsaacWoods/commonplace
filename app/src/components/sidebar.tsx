@@ -24,7 +24,7 @@ export default function Sidebar() {
             <h2>Hello, Isaac</h2>
 
             <Section>
-                <Link exact to="/">Home</Link>
+                <Link end to="/">Home</Link>
                 <Link to="/search">Search</Link>
             </Section>
 
