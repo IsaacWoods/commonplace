@@ -6,10 +6,12 @@ FROM --platform=$BUILDPLATFORM rustlang/rust:nightly as chef
 
 FROM --platform=$BUILDPLATFORM chef as server_planner
     COPY server/ .
+    COPY server/.cargo ./.cargo
     RUN cargo chef prepare --recipe-path recipe.json
 
 FROM --platform=$BUILDPLATFORM chef as server_builder
     COPY --from=server_planner /server/recipe.json recipe.json
+    COPY server/.cargo ./.cargo
     # Install the target
     ARG TARGETPLATFORM
     RUN case "${TARGETPLATFORM}" in \
