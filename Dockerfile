@@ -1,41 +1,47 @@
-FROM --platform=$BUILDPLATFORM rustlang/rust:nightly as server_builder
+FROM --platform=$BUILDPLATFORM rustlang/rust:nightly as chef
+    RUN cargo install cargo-chef
+    # Move source dependencies over
     COPY commonplace commonplace
     WORKDIR server
+
+FROM --platform=$BUILDPLATFORM chef as server_planner
+    COPY server/ .
+    RUN cargo chef prepare --recipe-path recipe.json
+
+FROM --platform=$BUILDPLATFORM chef as server_builder
+    COPY --from=server_planner /server/recipe.json recipe.json
+    # Install the target
     ARG TARGETPLATFORM
-    # Use a fake project to build the dependencies into a layer. This allows the layer to be cached.
-    COPY server/.cargo/config .cargo/config
-    COPY server/Cargo.toml Cargo.toml
-    RUN mkdir src/
-    RUN echo "fn main() { panic!(\"If you see this, the Docker build has not worked correctly :(\"); }" >src/main.rs
-    RUN apt-get update -y
-    RUN apt-get install -y lld
     RUN case "${TARGETPLATFORM}" in \
             "linux/amd64")  TARGET=x86_64-unknown-linux-musl ;; \
             "linux/arm64")  TARGET=aarch64-unknown-linux-musl ;; \
             *) exit 69 ;; \
         esac; \
         rustup target add $TARGET
+    RUN apt-get update -y
+    RUN apt-get install -y lld
+    # Cache the dependencies
     RUN case "${TARGETPLATFORM}" in \
             "linux/amd64")  TARGET=x86_64-unknown-linux-musl ;; \
             "linux/arm64")  TARGET=aarch64-unknown-linux-musl ;; \
             *) exit 69 ;; \
         esac; \
-        cargo build --release --target $TARGET
-    RUN rm -f target/release/deps/server*
-    # Copy the real code over and build it
+        cargo chef cook --release --target $TARGET --recipe-path recipe.json
+    # Actually build
     COPY server/ .
     RUN case "${TARGETPLATFORM}" in \
             "linux/amd64")  TARGET=x86_64-unknown-linux-musl ;; \
             "linux/arm64")  TARGET=aarch64-unknown-linux-musl ;; \
-            *) exit 1 ;; \
+            *) exit 69 ;; \
         esac; \
-        cargo build --release --target $TARGET
+        cargo build --release --target $TARGET --bin server
+    # Install to avoid needing to specify the target in the runtime container
     RUN case "${TARGETPLATFORM}" in \
             "linux/amd64")  TARGET=x86_64-unknown-linux-musl ;; \
             "linux/arm64")  TARGET=aarch64-unknown-linux-musl ;; \
-            *) exit 1 ;; \
+            *) exit 69 ;; \
         esac; \
-        cargo install --path . --target $TARGET
+        cargo install --target $TARGET --path .
 
 FROM --platform=$BUILDPLATFORM node as app_builder
     WORKDIR app
@@ -45,13 +51,14 @@ FROM --platform=$BUILDPLATFORM node as app_builder
     RUN yarn install
     COPY app/src/ ./src/
     COPY app/webpack.common.js app/webpack.production.js app/tsconfig.json ./
-    # COPY app/ .
     RUN yarn webpack --config webpack.production.js
 
 # TODO: use a lighter image? Alpine would require us to build against musl
-FROM ubuntu:latest
+FROM alpine:latest
     COPY --from=server_builder /usr/local/cargo/bin/server /usr/local/bin/server
     COPY --from=app_builder app/dist/ /dist/
     ENV ROCKET_ADDRESS="0.0.0.0"
-    ENV ROCKER_DIST_DIR="/dist/"
+    ENV ROCKET_DIST_DIR="/dist/"
+    VOLUME /db
+    VOLUME /index
     CMD ["server"]
