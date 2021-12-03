@@ -55,12 +55,12 @@ FROM --platform=$BUILDPLATFORM node as app_builder
     COPY app/webpack.common.js app/webpack.production.js app/tsconfig.json ./
     RUN yarn webpack --config webpack.production.js
 
-# TODO: use a lighter image? Alpine would require us to build against musl
 FROM alpine:latest
     COPY --from=server_builder /usr/local/cargo/bin/server /usr/local/bin/server
     COPY --from=app_builder app/dist/ /dist/
     ENV ROCKET_ADDRESS="0.0.0.0"
     ENV ROCKET_DIST_DIR="/dist/"
+    EXPOSE 8000
     VOLUME /db
     VOLUME /index
     CMD ["server"]
