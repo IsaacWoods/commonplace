@@ -21,8 +21,6 @@ export default function Sidebar() {
 
     return (
         <Container column>
-            <h2>Hello, Isaac</h2>
-
             <Section>
                 <Link end to="/">Home</Link>
                 <Link to="/search">Search</Link>
