@@ -24,10 +24,13 @@ pub struct ZettelUpdate {
     pub content: Option<Vec<Block>>,
 }
 
+// TODO: add a `Retry-After: 1` header to the error response
 #[post("/zettel.create")]
-pub fn create(store: &State<ZettelStore>) -> Result<Json<ZettelId>, ()> {
-    let id = store.create();
-    Ok(Json(id))
+pub fn create(store: &State<ZettelStore>) -> Result<Json<ZettelId>, Status> {
+    match store.create() {
+        Some(id) => Ok(Json(id)),
+        None => Err(Status::TooManyRequests),
+    }
 }
 
 #[get("/zettel.fetch/<id>")]

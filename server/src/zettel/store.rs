@@ -15,15 +15,20 @@ impl ZettelStore {
         ZettelStore { tree: sled::open("db").unwrap().open_tree("zettels").unwrap(), index }
     }
 
-    pub fn create(&self) -> ZettelId {
+    /// Try to create a new Zettel with a generated ID. Returns `None` if a duplicate ID is generated - this means
+    /// client(s) are trying to create Zettels too fast (more than one a second).
+    pub fn create(&self) -> Option<ZettelId> {
         let id = ZettelId::generate();
 
-        // TODO: proper error for accidently generating duplicate IDs
+        /*
+         * We're using the compare-and-swap to detect duplicate ID generation - if there's already an entry for
+         * that ID, turn the error into `None`.
+         */
         self.tree
             .compare_and_swap(&id.encode(), None: Option<&[u8]>, Some(ZettelRecord::default().serialize()))
             .unwrap()
-            .expect("Failed to create Zettel!");
-        id
+            .ok()?;
+        Some(id)
     }
 
     pub fn get(&self, id: ZettelId) -> Option<ZettelRecord> {
