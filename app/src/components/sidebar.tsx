@@ -40,6 +40,7 @@ const Container = styled(Flex)`
     bottom: 0;
     width: ${props => props.theme.sidebarWidth}px;
     height: auto;
+    overflow-y: scroll;
     background: ${props => props.theme.sidebarColor};
     z-index: 10;
     margin: 0;
