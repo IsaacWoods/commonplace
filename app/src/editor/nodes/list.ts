@@ -55,7 +55,7 @@ export class List extends Functionality {
 
     inputRules(schema) {
         return [
-            wrappingInputRule(/^\s*([-*])\s*$/, schema.nodes.list),
+            wrappingInputRule(/^\s*([-*])\s$/, schema.nodes.list),
         ];
     }
 
