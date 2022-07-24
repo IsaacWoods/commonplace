@@ -20,6 +20,8 @@ function parseBlock(schema: Schema, block: Block): Node {
             return schema.node("divider", null, []);
         case "List":
             return schema.node("list", null, block.items.map((item) => parseListItem(schema, item)));
+        case "Image":
+            return schema.node("image", { src: block.src, alt: block.alt }, []);
         default:
             throw new Error(`Can't find parser for block of type ${block.type}`);
     }

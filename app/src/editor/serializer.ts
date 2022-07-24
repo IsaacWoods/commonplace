@@ -32,6 +32,9 @@ function serializeBlock(node: Node): Block {
             node.content.forEach((node, _, i) => { items.push(serializeListItem(node)); });
             return { type: "List", items };
         }
+        case "image": {
+            return { type: "Image", src: node.attrs.src, alt: node.attrs.alt };
+        }
         default:
             throw new Error(`Unrecognized node type while serializing a block: ${node.type.name}`);
     }

@@ -8,10 +8,16 @@ export type Zettel = {
 export type ZettelContent = Block[];
 
 export type Block = {
-    type: "Paragraph" | "Heading" | "Divider" | "List",
+    type: "Paragraph" | "Heading" | "Divider" | "List" | "Image",
     inlines?: Inline[],
     items?: ListItem[],
+
+    // For headings
     level?: number,
+
+    // For images
+    src?: string,
+    alt?: string,
 }
 
 export type Inline = {
