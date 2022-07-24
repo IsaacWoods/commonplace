@@ -17,6 +17,7 @@ import Paragraph from './nodes/paragraph';
 import Heading from './nodes/heading';
 import Divider from './nodes/divider';
 import { List, ListItem } from './nodes/list';
+import Image from './nodes/image';
 
 import Bold from './marks/bold';
 import Italic from './marks/italic';
@@ -81,6 +82,7 @@ export default function EditorProvider(props: ProviderProps) {
             new Divider(),
             new List(),
             new ListItem(),
+            new Image(),
 
             /*
              * Marks
