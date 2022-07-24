@@ -46,7 +46,7 @@ impl ZettelRecord {
 pub enum Block {
     Paragraph { inlines: Vec<Inline> },
     Heading { level: u8, inlines: Vec<Inline> },
-    Image { src: String },
+    Image { src: String, alt: String },
     Divider,
     List { items: Vec<ListItem> },
 }
@@ -115,7 +115,7 @@ impl From<endpoint::Block> for Block {
             endpoint::Block::Heading { level, inlines } => {
                 Block::Heading { level, inlines: inlines.into_iter().map(Inline::from).collect() }
             }
-            endpoint::Block::Image { src } => Block::Image { src },
+            endpoint::Block::Image { src, alt } => Block::Image { src, alt },
             endpoint::Block::Divider => Block::Divider,
             endpoint::Block::List { items } => {
                 Block::List { items: items.into_iter().map(ListItem::from).collect() }

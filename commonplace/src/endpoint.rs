@@ -12,7 +12,7 @@ pub struct Zettel {
 pub enum Block {
     Paragraph { inlines: Vec<Inline> },
     Heading { level: u8, inlines: Vec<Inline> },
-    Image { src: String },
+    Image { src: String, alt: String },
     Divider,
     List { items: Vec<ListItem> },
 }
@@ -54,7 +54,7 @@ impl From<record::Block> for Block {
             record::Block::Heading { level, inlines } => {
                 Block::Heading { level, inlines: inlines.into_iter().map(Inline::from).collect() }
             }
-            record::Block::Image { src } => Block::Image { src },
+            record::Block::Image { src, alt } => Block::Image { src, alt },
             record::Block::Divider => Block::Divider,
             record::Block::List { items } => {
                 Block::List { items: items.into_iter().map(ListItem::from).collect() }
