@@ -66,7 +66,7 @@ const StyledView = styled.div`
     }
 
     ul {
-        margin: 0 0 0 -20px;
+        margin: 0;
     }
 
     .ProseMirror-gapcursor {
