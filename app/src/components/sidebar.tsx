@@ -2,21 +2,16 @@ import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import Flex from './flex';
-import { ZettelCache, list_zettels, Zettel, ZettelResult } from '../zettel';
+import { list_zettels, Zettel, ZettelResult } from '../zettel';
 
 export default function Sidebar() {
-    const zettelCache = React.useContext(ZettelCache);
+    const [zettels, setZettels] = React.useState([]);
 
     React.useEffect(() => {
-        list_zettels().then((zettels) => {
-            zettels.forEach((zettel: ZettelResult) => {
-                zettelCache.dispatch({ type: "updateZettel", id: zettel.id, zettel: { title: zettel.title, content: zettel.content }});
-            });
-        });
+        list_zettels().then((zettels) => setZettels(zettels));
     }, []);
-
-    const zettels = Array.from(zettelCache.state.zettels).map(([id, zettel]: [number, Zettel]) => {
-        return (<Link key={id} to={`/zettel/${id}`}>{zettel.title || "Untitled Zettel"}</Link>);
+    const zettelLinks = zettels.map(({id, title}: ZettelResult) => {
+        return (<Link key={id} to={`/zettel/${id}`}>{title || "Untitled Zettel"}</Link>);
     });
 
     return (
@@ -28,7 +23,7 @@ export default function Sidebar() {
 
             <Section>
                 <Header>Pinned</Header>
-                {zettels}
+                {zettelLinks}
             </Section>
         </Container>
     );

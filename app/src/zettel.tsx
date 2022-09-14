@@ -109,29 +109,3 @@ export async function search_zettels(query: string): Promise<number[]> {
         throw new Error(`Failed to search Zettels: ${response}`);
     }
 }
-
-type CacheState = {
-    zettels: Map<number, Zettel>,
-}
-
-export const ZettelCache = React.createContext({ state: { zettels: null }, dispatch: undefined });
-const { Provider } = ZettelCache;
-
-type CacheAction = {
-    type: string,
-    id?: number,
-    zettel?: Zettel,
-}
-
-export const ZettelCacheProvider = ({ children }: { children: React.ReactNode }) => {
-    const [state, dispatch] = React.useReducer((state: CacheState, action: CacheAction) => {
-        switch (action.type) {
-            case "updateZettel":
-                return { ...state, zettels: state.zettels.set(action.id, action.zettel) };
-            default:
-                throw new Error();
-        }
-    }, { zettels: new Map() });
-
-    return (<Provider value={{ state, dispatch }}>{children}</Provider>);
-};

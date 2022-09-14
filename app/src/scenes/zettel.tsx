@@ -11,24 +11,15 @@ import EditorProvider from '../editor';
 import EditorView from '../editor/view';
 import ChangeReporter from '../editor/change_reporter';
 import type { ZettelContent } from '../zettel';
-import { fetch_zettel, update_zettel, ZettelCache } from '../zettel';
+import { fetch_zettel, update_zettel} from '../zettel';
 import { debounce } from 'lodash';
 
 function ZettelEditor(props: { id: number }) {
-    const zettelCache = React.useContext(ZettelCache);
     const [zettel, setZettel] = React.useState(null);
 
     React.useEffect(() => {
-        // See if the Zettel is already in the cache
-        const zettel = zettelCache.state.zettels.get(props.id);
-        if (zettel) {
-            setZettel(zettel);
-            return;
-        }
-
         fetch_zettel(props.id).then((result) => {
             setZettel(result);
-            zettelCache.dispatch({ type: "updateZettel", id: props.id, zettel: result });
         }).catch((error) => {
             console.log("Error: ", error);
         });
@@ -36,7 +27,6 @@ function ZettelEditor(props: { id: number }) {
 
     const DEBOUNCE_SAVE_MS = 1200;
     const debouncedSave = React.useCallback(debounce(async (zettel) => {
-        zettelCache.dispatch({ type: "updateZettel", id: props.id, zettel });
         await update_zettel(props.id, { title: zettel.title, content: zettel.content });
     }, DEBOUNCE_SAVE_MS), []);
     React.useEffect(() => {
