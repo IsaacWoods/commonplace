@@ -109,3 +109,29 @@ export async function search_zettels(query: string): Promise<number[]> {
         throw new Error(`Failed to search Zettels: ${response}`);
     }
 }
+
+type ZettelContextState = {
+    titles: Map<number, string>,
+}
+
+export const ZettelContext = React.createContext({ state: { titles: null }, dispatch: undefined });
+const { Provider } = ZettelContext;
+
+type ZettelContextAction = {
+    type: string,
+    id?: number,
+    title?: string,
+};
+
+export const ZettelContextProvider = ({ children }: { children: React.ReactNode }) => {
+    const [state, dispatch] = React.useReducer((state: ZettelContextState, action: ZettelContextAction) => {
+        switch (action.type) {
+            case "updateTitle":
+                return { ...state, titles: state.titles.set(action.id, action.title) };
+            default:
+                throw new Error("Unknown ZettelCache action");
+        }
+    }, { titles: new Map() });
+
+    return (<Provider value={{ state, dispatch }}>{children}</Provider>);
+}

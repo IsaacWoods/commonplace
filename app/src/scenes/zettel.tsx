@@ -11,10 +11,11 @@ import EditorProvider from '../editor';
 import EditorView from '../editor/view';
 import ChangeReporter from '../editor/change_reporter';
 import type { ZettelContent } from '../zettel';
-import { fetch_zettel, update_zettel} from '../zettel';
+import { fetch_zettel, update_zettel, ZettelContext } from '../zettel';
 import { debounce } from 'lodash';
 
 function ZettelEditor(props: { id: number }) {
+    const zettelContext = React.useContext(ZettelContext);
     const [zettel, setZettel] = React.useState(null);
 
     React.useEffect(() => {
@@ -40,7 +41,9 @@ function ZettelEditor(props: { id: number }) {
     }, [setZettel]);
 
     const onChangeTitle = React.useCallback((event: React.SyntheticEvent<HTMLTextAreaElement>) => {
-        setZettel((zettel) => ({ ...zettel, title: (event.target as HTMLTextAreaElement).value }));
+        const newTitle = (event.target as HTMLTextAreaElement).value;
+        setZettel((zettel) => ({ ...zettel, title: newTitle }));
+        zettelContext.dispatch({ type: "updateTitle", id: props.id, title: newTitle });
     }, [setZettel]);
 
     return (
