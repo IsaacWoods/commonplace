@@ -6,7 +6,7 @@ import Header, { Action } from '../components/header';
 import Button from '../components/button';
 import CenteredContent from '../components/centered';
 import Flex from '../components/flex';
-import TextareaAutosize from 'react-autosize-textarea';
+import TextareaAutosize from 'react-textarea-autosize';
 import EditorProvider from '../editor';
 import EditorView from '../editor/view';
 import ChangeReporter from '../editor/change_reporter';
