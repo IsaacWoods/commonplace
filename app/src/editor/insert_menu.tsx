@@ -6,7 +6,7 @@ import { InputRule } from 'prosemirror-inputrules';
 import { Schema } from 'prosemirror-model';
 import { Plugin, EditorState } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
-import { findParentNode } from 'prosemirror-utils';
+import { findParentNode } from '@curvenote/prosemirror-utils';
 import { useEditor } from '.';
 
 export class InsertMenuOpener extends Functionality {

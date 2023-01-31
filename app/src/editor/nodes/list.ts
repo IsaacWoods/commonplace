@@ -4,7 +4,7 @@ import { EditorState, Transaction } from 'prosemirror-state';
 import { splitListItem, sinkListItem, liftListItem, wrapInList } from 'prosemirror-schema-list';
 import { NodeType } from 'prosemirror-model';
 import { wrappingInputRule } from 'prosemirror-inputrules';
-import { findParentNode } from 'prosemirror-utils';
+import { findParentNode } from '@curvenote/prosemirror-utils';
 
 export class ListItem extends Functionality {
     node() {
