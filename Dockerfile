@@ -48,12 +48,10 @@ FROM --platform=$BUILDPLATFORM chef as server_builder
 FROM --platform=$BUILDPLATFORM node as app_builder
     WORKDIR app
     COPY app/package.json package.json
-    COPY app/yarn.lock yarn.lock
-    RUN yarn set version berry
-    RUN yarn install
+    COPY app/package-lock.json package-lock.json
     COPY app/src/ ./src/
     COPY app/webpack.common.js app/webpack.production.js app/tsconfig.json ./
-    RUN yarn webpack --config webpack.production.js
+    RUN npx webpack --config webpack.production.js
 
 FROM alpine:latest
     COPY --from=server_builder /usr/local/cargo/bin/server /usr/local/bin/server

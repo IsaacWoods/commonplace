@@ -28,9 +28,9 @@ fn webpack_app(prod: bool) -> Result<()> {
     let _app = pushd("app")?;
 
     if prod {
-        cmd!("yarn webpack --config webpack.production.js").run()?;
+        cmd!("npx webpack --config webpack.production.js").run()?;
     } else {
-        cmd!("yarn webpack --config webpack.dev.js").run()?;
+        cmd!("npx webpack --config webpack.dev.js").run()?;
     }
 
     Ok(())

@@ -2,9 +2,8 @@ import { Node, Mark as ProseMark } from 'prosemirror-model';
 import { ZettelContent, Block, Inline, ListItem, Mark } from '../zettel';
 
 export default function serializeDoc(content: Node): ZettelContent {
-    let blocks = [];
-
     // `Node` doesn't have a `map` :(
+    let blocks = [];
     content.forEach((node, _, i) => {
         blocks.push(serializeBlock(node));
     });
@@ -74,7 +73,7 @@ type MarksParse = {
     link_href: null | string,
 }
 
-function serializeMarks(prose_marks: ProseMark[]): MarksParse {
+function serializeMarks(prose_marks: readonly ProseMark[]): MarksParse {
     let link_href = null;
     const marks = prose_marks.flatMap((mark): Mark[] => {
         switch (mark.type.name) {
