@@ -51,6 +51,7 @@ FROM --platform=$BUILDPLATFORM node as app_builder
     COPY app/package-lock.json package-lock.json
     COPY app/src/ ./src/
     COPY app/webpack.common.js app/webpack.production.js app/tsconfig.json ./
+    RUN npm install -D webpack webpack-cli
     RUN npx webpack --config webpack.production.js
 
 FROM alpine:latest
