@@ -25,7 +25,7 @@ impl ZettelStore {
          * that ID, turn the error into `None`.
          */
         self.tree
-            .compare_and_swap(&id.encode(), None: Option<&[u8]>, Some(ZettelRecord::default().serialize()))
+            .compare_and_swap(&id.encode(), None::<&[u8]>, Some(ZettelRecord::default().serialize()))
             .unwrap()
             .ok()?;
         Some(id)
