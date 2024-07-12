@@ -7,24 +7,27 @@ import Button from '../components/button';
 import CenteredContent from '../components/centered';
 import Flex from '../components/flex';
 import TextareaAutosize from 'react-textarea-autosize';
-import EditorProvider from '../editor';
-import EditorView from '../editor/view';
-import ChangeReporter from '../editor/change_reporter';
-import type { ZettelContent } from '../zettel';
 import { fetch_zettel, update_zettel, ZettelContext } from '../zettel';
 import { debounce } from 'lodash';
+
+import { EditorProvider, useEditor, EditorContent, FloatingMenu, BubbleMenu } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
+
+const extensions = [StarterKit];
 
 function ZettelEditor(props: { id: number }) {
     const zettelContext = React.useContext(ZettelContext);
     const [zettel, setZettel] = React.useState(null);
 
-    React.useEffect(() => {
-        fetch_zettel(props.id).then((result) => {
-            setZettel(result);
-        }).catch((error) => {
-            console.log("Error: ", error);
-        });
-    }, [props.id]);
+    const editor = useEditor({
+        extensions,
+        content: '<p>Hello there!</p>',
+
+        onUpdate: ({editor}) => {
+            const json = editor.getJSON();
+            setZettel((zettel) => ({ ...zettel, content: json }));
+        }
+    });
 
     const DEBOUNCE_SAVE_MS = 1200;
     const debouncedSave = React.useCallback(debounce(async (zettel) => {
@@ -36,7 +39,7 @@ function ZettelEditor(props: { id: number }) {
         }
     }, [zettel, debouncedSave]);
 
-    const onChange = React.useCallback((content: ZettelContent) => {
+    const onChange = React.useCallback((content: any) => {
         setZettel((zettel) => ({ ...zettel, content }));
     }, [setZettel]);
 
@@ -55,6 +58,18 @@ function ZettelEditor(props: { id: number }) {
         }
     }, []);
 
+    React.useEffect(() => {
+        setZettel({title: "", content: []});
+        fetch_zettel(props.id).then((result) => {
+            setZettel(result);
+            if (editor) {
+                editor.commands.setContent(result.content);
+            }
+        }).catch((error) => {
+            console.log("Error: ", error);
+        });
+    }, [props.id, editor]);
+
     return (
         <>
             <Header title={zettel ? zettel.title : "Loading Zettel..."} />
@@ -62,10 +77,9 @@ function ZettelEditor(props: { id: number }) {
                 { zettel ?
                     <Flex auto column>
                         <Title defaultValue={zettel.title} placeholder="Add a title..." onChange={onChangeTitle} onKeyUp={onTitleKeyUp} />
-                        <EditorProvider content={zettel.content}>
-                            <ChangeReporter onChange={onChange} />
-                            <EditorView />
-                        </EditorProvider>
+                        <EditorContent editor={editor} />
+                        <FloatingMenu editor={editor}>This is a floating menu</FloatingMenu>
+                        <BubbleMenu editor={editor}>This is a bubble menu</BubbleMenu>
                     </Flex>
                 : <></>}
             </CenteredContent>

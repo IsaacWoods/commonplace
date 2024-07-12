@@ -2,3 +2,5 @@
 **/*.rs.bk
 db/
 index/
+
+.npmrc

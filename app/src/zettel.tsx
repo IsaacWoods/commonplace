@@ -1,47 +1,6 @@
 import * as React from 'react';
 
-export type Zettel = {
-    title: string,
-    content: ZettelContent,
-}
-
-export type ZettelContent = Block[];
-
-export type Block = {
-    type: "Paragraph" | "Heading" | "Divider" | "List" | "Image",
-    inlines?: Inline[],
-    items?: ListItem[],
-
-    // For headings
-    level?: number,
-
-    // For images
-    src?: string,
-    alt?: string,
-}
-
-export type Inline = {
-    type: "Text" | "Link",
-    text?: string,
-    href?: string,
-    marks?: Mark[],
-}
-
-export type ListItem = {
-    blocks: Block[],
-}
-
-export type Mark = "Bold" | "Italic" | "Strikethrough" | "Highlight" | "Subscript" | "Superscript";
-
-// This is returned by endpoints that are not called for a specific Zettel ID. The title and content may be
-// missing, depending on the endpoint and various options, to save them being fetched and sent if not needed.
-export type ZettelResult = {
-    id: number,
-    title?: string,
-    content?: ZettelContent,
-}
-
-export async function create_zettel(): Promise<number> {
+export async function create_zettel() {
     let response = await fetch("/api/zettel.create/", {
         method: "POST",
         headers: {
@@ -57,13 +16,14 @@ export async function create_zettel(): Promise<number> {
     }
 }
 
-export async function fetch_zettel(id: number): Promise<Zettel> {
+export async function fetch_zettel(id: number) {
     console.log("Getting zettel with id: ", id);
 
     let response = await fetch(`/api/zettel.fetch/${id}`);
 
     if (response.status === 200) {
         let zettel = await response.json();
+        console.log("Zettel: ", zettel);
         return { title: zettel.title, content: zettel.content };
     } else if (response.status === 404) {
         throw new Error(`There is no Zettel with ID: ${id}`);
@@ -72,7 +32,7 @@ export async function fetch_zettel(id: number): Promise<Zettel> {
     }
 }
 
-export async function update_zettel(id: number, zettel: Zettel) {
+export async function update_zettel(id: number, zettel: any) {
     console.log("Updating zettel: ", id);
 
     let response = await fetch(`/api/zettel.update/${id}`, {
@@ -90,7 +50,7 @@ export async function update_zettel(id: number, zettel: Zettel) {
     }
 }
 
-export async function list_zettels(): Promise<ZettelResult[]> {
+export async function list_zettels(): Promise<Object[]> {
     let response = await fetch("/api/zettel.list");
 
     if (response.status === 200) {
@@ -115,7 +75,6 @@ type ZettelContextState = {
 }
 
 export const ZettelContext = React.createContext({ state: { titles: null }, dispatch: undefined });
-const { Provider } = ZettelContext;
 
 type ZettelContextAction = {
     type: string,
@@ -133,5 +92,5 @@ export const ZettelContextProvider = ({ children }: { children: React.ReactNode 
         }
     }, { titles: new Map() });
 
-    return (<Provider value={{ state, dispatch }}>{children}</Provider>);
+    return (<ZettelContext.Provider value={{ state, dispatch }}>{children}</ZettelContext.Provider>);
 }
