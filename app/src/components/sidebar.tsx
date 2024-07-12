@@ -2,14 +2,15 @@ import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import Flex from './flex';
-import { list_zettels, Zettel, ZettelResult, ZettelContext} from '../zettel';
+// import { list_zettels, Zettel, ZettelResult, ZettelContext} from '../zettel';
+import { list_zettels, ZettelContext } from '../zettel';
 
 export default function Sidebar() {
     const zettelContext = React.useContext(ZettelContext);
 
     React.useEffect(() => {
         list_zettels().then((zettels) => {
-            zettels.forEach((zettel: ZettelResult) => {
+            zettels.forEach((zettel: any) => {
                 zettelContext.dispatch({ type: "updateTitle", id: zettel.id, title: zettel.title });
             })
         })
