@@ -14,8 +14,7 @@ use tracing::{error, info};
 pub struct QueryResult {
     pub id: ZettelId,
     pub title: String,
-    // TODO: proper schema
-    pub content: serde_json::Value,
+    pub content: ZettelContent,
 }
 
 pub async fn create(State(state): State<Arc<AppState>>) -> Result<Json<ZettelId>, StatusCode> {
@@ -30,7 +29,7 @@ pub async fn fetch(
     Path(id): Path<ZettelId>,
 ) -> Result<Json<FoundZettel>, StatusCode> {
     match state.store.get(id) {
-        Some(record) => Ok(Json(FoundZettel { title: record.title, content: record.content.content })),
+        Some(record) => Ok(Json(FoundZettel { title: record.title, content: record.content })),
         None => Err(StatusCode::NOT_FOUND),
     }
 }
@@ -62,24 +61,25 @@ pub async fn update(
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct FoundZettel {
     pub title: String,
-    pub content: Vec<Block>,
+    pub content: ZettelContent,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ZettelUpdate {
-    pub title: Option<String>,
-    pub content: Option<ZettelContent>,
+    pub title: String,
+    pub content: ZettelContent,
 }
 
-#[derive(Clone, Debug, Default, Serialize, Deserialize)]
-pub struct ZettelContent {
-    /*
-     * When a Zettel is empty, the JSON contains an empty sequence for `ZettelContent`. We tell
-     * Serde to deserialize this as the default value, so this doesn't trip it up.
-     * TODO: this doesn't work lmao
-     */
-    #[serde(default)]
-    pub content: Vec<Block>,
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "camelCase")]
+pub enum ZettelContent {
+    Doc { content: Vec<Block> },
+}
+
+impl ZettelContent {
+    pub fn empty() -> ZettelContent {
+        Self::Doc { content: Vec::new() }
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
