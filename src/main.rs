@@ -3,13 +3,12 @@ mod store;
 mod zettel;
 
 use axum::{
-    extract::State,
+    http::StatusCode,
     routing::{get, post},
     Router,
 };
 use std::sync::Arc;
 use store::ZettelStore;
-use tokio::sync::Mutex;
 use tower_http::{
     services::{ServeDir, ServeFile},
     trace::TraceLayer,
@@ -23,20 +22,19 @@ struct AppState {
 #[tokio::main]
 pub async fn main() {
     tracing_subscriber::registry()
-        .with(tracing_subscriber::EnvFilter::try_from_default_env()
-                // .unwrap_or_else(|_| "commonplace=debug,tower_http=debug".into()),
-                .unwrap_or_else(|_| "commonplace=debug".into()))
+        .with(tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "commonplace=debug".into()))
         .with(tracing_subscriber::fmt::layer())
         .init();
 
     let state = Arc::new(AppState { store: ZettelStore::new() });
 
     let api_routes = Router::new()
-        .route("/zettel.create/", post(zettel::create))
+        .route("/zettel.create", post(zettel::create))
         .route("/zettel.fetch/:id", get(zettel::fetch))
-        .route("/zettel.list/", get(zettel::list))
+        .route("/zettel.list", get(zettel::list))
         .route("/zettel.search?query", get(zettel::search))
-        .route("/zettel.update/:id", post(zettel::update));
+        .route("/zettel.update/:id", post(zettel::update))
+        .fallback(api_fallback);
 
     /*
      * The main router for the app. We serve static files and route API calls, then fallback to the
@@ -53,4 +51,8 @@ pub async fn main() {
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8000").await.unwrap();
     tracing::info!("Listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
+}
+
+async fn api_fallback() -> (StatusCode, &'static str) {
+    (StatusCode::NOT_FOUND, "API method not found")
 }

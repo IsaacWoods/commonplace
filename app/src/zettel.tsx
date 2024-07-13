@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 export async function create_zettel() {
-    let response = await fetch("/api/zettel.create/", {
+    let response = await fetch("/api/zettel.create", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
