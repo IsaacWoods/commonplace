@@ -100,6 +100,7 @@ pub enum Block {
     OrderedList { content: Option<Vec<Block>> },
     TaskList { content: Option<Vec<Block>> },
     TaskItem { attrs: TaskItemAttrs, content: Option<Vec<Block>> },
+    Image { attrs: ImageAttrs },
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -110,6 +111,13 @@ pub struct HeadingAttrs {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TaskItemAttrs {
     checked: bool,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ImageAttrs {
+    src: String,
+    alt: Option<String>,
+    title: Option<String>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

@@ -13,10 +13,14 @@ import { debounce } from 'lodash';
 import { EditorProvider, useEditor, EditorContent, FloatingMenu, BubbleMenu } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
+import ListKeymap from '@tiptap/extension-list-keymap';
 import Link from '@tiptap/extension-link';
 import Superscript from '@tiptap/extension-superscript';
 import Subscript from '@tiptap/extension-subscript';
 import Highlight from '@tiptap/extension-highlight';
+import TaskList from '@tiptap/extension-task-list';
+import TaskItem from '@tiptap/extension-task-item';
+import Image from '@tiptap/extension-image';
 
 function ZettelEditor(props: { id: number }) {
     const zettelContext = React.useContext(ZettelContext);
@@ -34,6 +38,7 @@ function ZettelEditor(props: { id: number }) {
             Highlight.configure({ multicolor: true }),
             TaskList,
             TaskItem.configure({ nested: true }),
+            Image,
         ],
         content: '<p>Hello there!</p>',
 
@@ -84,6 +89,13 @@ function ZettelEditor(props: { id: number }) {
         });
     }, [props.id, editor]);
 
+    const addImage = React.useCallback(() => {
+        const url = window.prompt('URL');
+        if (url) {
+            editor.chain().focus().setImage({ src: url }).run();
+        }
+    }, [editor]);
+
     return (
         <>
             <Header title={zettel ? zettel.title : "Loading Zettel..."} />
@@ -92,8 +104,12 @@ function ZettelEditor(props: { id: number }) {
                     <Flex auto column>
                         <Title defaultValue={zettel.title} placeholder="Add a title..." onChange={onChangeTitle} onKeyUp={onTitleKeyUp} />
                         <StyledEditorContent editor={editor} />
-                        <FloatingMenu editor={editor}>This is a floating menu</FloatingMenu>
-                        <BubbleMenu editor={editor}>This is a bubble menu</BubbleMenu>
+                        <FloatingMenu editor={editor}>
+                            <button onClick={addImage}>Image</button>
+                        </FloatingMenu>
+                        <BubbleMenu editor={editor}>
+                            This is a bubble menu
+                        </BubbleMenu>
                     </Flex>
                 : <></>}
             </CenteredContent>
