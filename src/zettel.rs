@@ -35,8 +35,13 @@ pub async fn fetch(
 }
 
 pub async fn list(State(state): State<Arc<AppState>>) -> Result<Json<Vec<QueryResult>>, StatusCode> {
-    // TODO
-    Ok(Json(vec![]))
+    let all = state
+        .store
+        .all()
+        .into_iter()
+        .map(|(id, record)| QueryResult { id, title: record.title, content: record.content })
+        .collect();
+    Ok(Json(all))
 }
 
 pub async fn search(State(state): State<Arc<AppState>>, Query(query): Query<String>) -> impl IntoResponse {
