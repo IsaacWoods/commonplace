@@ -93,7 +93,7 @@ pub enum Block {
     Paragraph { content: Option<Vec<Inline>> },
     Blockquote { content: Option<Vec<Block>> },
     BulletList { content: Option<Vec<Block>> },
-    CodeBlock { content: Option<Vec<Inline>> },
+    CodeBlock { attrs: CodeBlockAttrs, content: Option<Vec<Inline>> },
     Heading { attrs: HeadingAttrs, content: Option<Vec<Inline>> },
     HorizontalRule,
     ListItem { content: Option<Vec<Block>> },
@@ -105,6 +105,11 @@ pub enum Block {
     TableHeader { attrs: TableAttrs, content: Option<Vec<Block>> },
     TableCell { attrs: TableAttrs, content: Option<Vec<Block>> },
     Image { attrs: ImageAttrs },
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct CodeBlockAttrs {
+    pub language: Option<String>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
