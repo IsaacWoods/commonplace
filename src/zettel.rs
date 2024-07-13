@@ -118,4 +118,12 @@ pub enum Mark {
     Italic,
     Strike,
     Code,
+    Link { attrs: LinkAttrs },
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct LinkAttrs {
+    pub href: String,
+    pub target: String,
+    pub rel: String,
 }

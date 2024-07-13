@@ -13,6 +13,7 @@ import { debounce } from 'lodash';
 import { EditorProvider, useEditor, EditorContent, FloatingMenu, BubbleMenu } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
+import Link from '@tiptap/extension-link';
 
 function ZettelEditor(props: { id: number }) {
     const zettelContext = React.useContext(ZettelContext);
@@ -22,6 +23,8 @@ function ZettelEditor(props: { id: number }) {
         extensions: [
             StarterKit,
             Placeholder.configure({ placeholder: "Write something..." }),
+            // TODO: for some reason `defaultProtocol` is not found... investigate maybe at some point
+            Link.configure({ openOnClick: true, autolink: true }),
         ],
         content: '<p>Hello there!</p>',
 
