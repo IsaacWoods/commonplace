@@ -12,15 +12,17 @@ import { debounce } from 'lodash';
 
 import { EditorProvider, useEditor, EditorContent, FloatingMenu, BubbleMenu } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-
-const extensions = [StarterKit];
+import Placeholder from '@tiptap/extension-placeholder'
 
 function ZettelEditor(props: { id: number }) {
     const zettelContext = React.useContext(ZettelContext);
     const [zettel, setZettel] = React.useState(null);
 
     const editor = useEditor({
-        extensions,
+        extensions: [
+            StarterKit,
+            Placeholder.configure({ placeholder: "Write something..." }),
+        ],
         content: '<p>Hello there!</p>',
 
         onUpdate: ({editor}) => {
@@ -77,7 +79,7 @@ function ZettelEditor(props: { id: number }) {
                 { zettel ?
                     <Flex auto column>
                         <Title defaultValue={zettel.title} placeholder="Add a title..." onChange={onChangeTitle} onKeyUp={onTitleKeyUp} />
-                        <EditorContent editor={editor} />
+                        <StyledEditorContent editor={editor} />
                         <FloatingMenu editor={editor}>This is a floating menu</FloatingMenu>
                         <BubbleMenu editor={editor}>This is a bubble menu</BubbleMenu>
                     </Flex>
@@ -116,5 +118,15 @@ const Title = styled(TextareaAutosize)`
     &::placeholder {
         color: ${props => props.theme.placeholder};
         -webkit-text-fill-color: ${props => props.theme.placeholder};
+    }
+`;
+
+const StyledEditorContent = styled(EditorContent)`
+    .tiptap p.is-editor-empty:first-child::before {
+        color: #adb5bd;
+        content: attr(data-placeholder);
+        float: left;
+        height: 0;
+        pointer-events: none;
     }
 `;
