@@ -119,6 +119,9 @@ pub enum Mark {
     Strike,
     Code,
     Link { attrs: LinkAttrs },
+    Superscript,
+    Subscript,
+    Highlight { color: Option<String> },
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
