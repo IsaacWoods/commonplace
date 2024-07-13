@@ -171,6 +171,12 @@ const StyledEditorContent = styled(EditorContent)`
             pointer-events: none;
         }
 
+        blockquote {
+            border-left: 3px solid #d0d0d0;
+            margin: 1.5rem 0;
+            padding-left: 1rem;
+        }
+
         :first-child {
             margin-top: 0;
         }
@@ -269,6 +275,14 @@ const StyledEditorContent = styled(EditorContent)`
         &.resize-cursor {
             cursor: ew-resize;
             cursor: col-resize;
+        }
+
+        code {
+            background-color: #d8e3e8;
+            border-radius: 0.4rem;
+            color: black;
+            font-size: 0.85rem;
+            padding: 0.25em 0.3em;
         }
     }
 `;
