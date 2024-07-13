@@ -17,6 +17,7 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "@tiptap/extension-placeholder": "^2.4.0",
     "@tiptap/pm": "^2.1.7",
     "@tiptap/react": "^2.1.7",
     "@tiptap/starter-kit": "^2.1.7",
