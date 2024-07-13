@@ -26,11 +26,14 @@ function ZettelEditor(props: { id: number }) {
         extensions: [
             StarterKit,
             Placeholder.configure({ placeholder: "Write something..." }),
+            ListKeymap,
             // TODO: for some reason `defaultProtocol` is not found... investigate maybe at some point
             Link.configure({ openOnClick: true, autolink: true }),
             Superscript,
             Subscript,
             Highlight.configure({ multicolor: true }),
+            TaskList,
+            TaskItem.configure({ nested: true }),
         ],
         content: '<p>Hello there!</p>',
 
@@ -131,11 +134,50 @@ const Title = styled(TextareaAutosize)`
 `;
 
 const StyledEditorContent = styled(EditorContent)`
-    .tiptap p.is-editor-empty:first-child::before {
-        color: #adb5bd;
-        content: attr(data-placeholder);
-        float: left;
-        height: 0;
-        pointer-events: none;
+    .tiptap {
+        :first-child {
+            margin-top: 0;
+        }
+
+        ul, ol {
+            padding: 0 1rem;
+            margin: 1.25rem 1rem 1.25rem 0.4rem;
+
+            li p {
+                margin-top: 0.25em;
+                margin-bottom 0.25em;
+            }
+        }
+
+        /* TODO: the checkbox isn't centered within the line - not sure why */
+        ul[data-type="taskList"] {
+            list-style: none;
+            margin-left: 0;
+            padding: 0;
+
+            li {
+                align-items: flex-start;
+                display: flex;
+
+                > label {
+                    flex: 0 0 auto;
+                    margin-right: 0.5rem;
+                    user-select: none;
+                }
+
+                > div {
+                    flex: 1 1 auto;
+                }
+            }
+
+            input[type="checkbox"] {
+                cursor: pointer;
+            }
+
+            ul[data-type="taskList"] {
+                margin: 0;
+            }
+        }
+
     }
 `;

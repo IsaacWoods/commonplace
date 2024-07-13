@@ -98,11 +98,18 @@ pub enum Block {
     HorizontalRule,
     ListItem { content: Option<Vec<Block>> },
     OrderedList { content: Option<Vec<Block>> },
+    TaskList { content: Option<Vec<Block>> },
+    TaskItem { attrs: TaskItemAttrs, content: Option<Vec<Block>> },
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct HeadingAttrs {
     pub level: usize,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct TaskItemAttrs {
+    checked: bool,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
