@@ -10,9 +10,9 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { fetch_zettel, update_zettel, ZettelContext } from '../zettel';
 import { debounce } from 'lodash';
 
-import { EditorProvider, useEditor, EditorContent, FloatingMenu, BubbleMenu } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import Placeholder from '@tiptap/extension-placeholder'
+import { EditorProvider, useEditor, EditorContent, FloatingMenu, BubbleMenu } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Placeholder from '@tiptap/extension-placeholder';
 import ListKeymap from '@tiptap/extension-list-keymap';
 import Link from '@tiptap/extension-link';
 import Superscript from '@tiptap/extension-superscript';
@@ -20,6 +20,10 @@ import Subscript from '@tiptap/extension-subscript';
 import Highlight from '@tiptap/extension-highlight';
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
+import Table from '@tiptap/extension-table';
+import TableCell from '@tiptap/extension-table-cell';
+import TableHeader from '@tiptap/extension-table-header';
+import TableRow from '@tiptap/extension-table-row';
 import Image from '@tiptap/extension-image';
 
 function ZettelEditor(props: { id: number }) {
@@ -38,6 +42,10 @@ function ZettelEditor(props: { id: number }) {
             Highlight.configure({ multicolor: true }),
             TaskList,
             TaskItem.configure({ nested: true }),
+            Table.configure({ resizable: true }),
+            TableRow,
+            TableHeader,
+            TableCell,
             Image,
         ],
         content: '<p>Hello there!</p>',
@@ -105,6 +113,7 @@ function ZettelEditor(props: { id: number }) {
                         <Title defaultValue={zettel.title} placeholder="Add a title..." onChange={onChangeTitle} onKeyUp={onTitleKeyUp} />
                         <StyledEditorContent editor={editor} />
                         <FloatingMenu editor={editor}>
+                            <button onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run() }>Table</button>
                             <button onClick={addImage}>Image</button>
                         </FloatingMenu>
                         <BubbleMenu editor={editor}>
@@ -151,6 +160,17 @@ const Title = styled(TextareaAutosize)`
 
 const StyledEditorContent = styled(EditorContent)`
     .tiptap {
+        padding-bottom: 100px;
+
+        /* This renders the placeholder from a custom attribute if the editor is empty */
+        p.is-editor-empty:first-child::before {
+            color: #adb5bd;
+            content: attr(data-placeholder);
+            float: left;
+            height: 0;
+            pointer-events: none;
+        }
+
         :first-child {
             margin-top: 0;
         }
@@ -195,5 +215,60 @@ const StyledEditorContent = styled(EditorContent)`
             }
         }
 
+        table {
+            border-collapse: collapse;
+            margin: 0;
+            overflow: hidden;
+            table-layout: fixed;
+            width: 100%;
+
+            td, th {
+                border: 1px solid #d0d0d0;
+                box-sizing: border-box;
+                min-width: 1em;
+                padding: 6px 8px;
+                position: relative;
+                vertical-align: top;
+
+                > * {
+                    margin-bottom: 0;
+                }
+            }
+
+            th {
+                background-color: #e1e5eb;
+                font-weight: bold;
+                text-align: left;
+            }
+
+            .selectedCell:after {
+                background-color: #a3a3a3;
+                content: "";
+                left: 0; right: 0; top: 0; bottom: 0;
+                pointer-events: none;
+                position: absolute;
+                z-index: 2;
+            }
+
+            .column-resize-handle {
+                background-color: #3e555e;
+                bottom: -2px;
+                pointer-events: none;
+                position: absolute;
+                right: -2px;
+                top: 0;
+                width: 4px;
+            }
+        }
+
+        .tableWrapper {
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        &.resize-cursor {
+            cursor: ew-resize;
+            cursor: col-resize;
+        }
     }
 `;
