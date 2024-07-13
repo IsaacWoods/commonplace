@@ -1,9 +1,7 @@
+use crate::zettel::{ZettelContent, ZettelUpdate};
 use commonplace::ZettelId;
 use serde::{Deserialize, Serialize};
-use std::{convert::TryInto, ops::Deref, sync::Arc};
-use tracing::info;
-
-use crate::zettel::{ZettelContent, ZettelUpdate};
+use std::{convert::TryInto, ops::Deref};
 
 pub struct ZettelStore {
     tree: sled::Tree,
@@ -25,7 +23,7 @@ impl ZettelStore {
          * that ID, turn the error into `None`.
          */
         self.tree
-            .compare_and_swap(&id.encode(), None::<&[u8]>, Some(ZettelRecord::default().serialize()))
+            .compare_and_swap(&id.encode(), None::<&[u8]>, Some(ZettelRecord::new().serialize()))
             .unwrap()
             .ok()?;
         Some(id)
@@ -60,13 +58,8 @@ impl ZettelStore {
             .update_and_fetch(&id.encode(), |old| {
                 let mut zettel = ZettelRecord::deserialize(old.unwrap()).unwrap();
 
-                if let Some(title) = &update.title {
-                    zettel.title = title.clone();
-                }
-
-                if let Some(content) = &update.content {
-                    zettel.content = content.clone();
-                }
+                zettel.title = update.title.clone();
+                zettel.content = update.content.clone();
 
                 // TODO: update the index when it exists again
                 // self.index.update_zettel(id, &zettel);
@@ -87,7 +80,7 @@ impl ZettelStore {
 ///      if the configuration changes)).
 pub const CURRENT_ZETTEL_FORMAT_VERSION: u16 = 2;
 
-#[derive(Clone, Default, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ZettelRecord {
     pub title: String,
     pub content: ZettelContent,
@@ -100,6 +93,10 @@ pub enum DeserializeError {
 }
 
 impl ZettelRecord {
+    pub fn new() -> ZettelRecord {
+        ZettelRecord { title: String::new(), content: ZettelContent::empty(), backlinks: Vec::new() }
+    }
+
     pub fn serialize(&self) -> Vec<u8> {
         let mut bytes = Vec::from(u16::to_le_bytes(CURRENT_ZETTEL_FORMAT_VERSION));
         bytes.extend(&serde_cbor::to_vec(self).unwrap());
