@@ -89,14 +89,12 @@ function ZettelEditor(props: { id: number }) {
         zettelContext.dispatch({ type: "updateTitle", id: props.id, title: newTitle });
     }, [setZettel]);
 
-    const onTitleKeyUp = React.useCallback((event) => {
+    const onTitleKeyDown = React.useCallback((event) => {
         if (event.key === "Enter") {
-            console.log("Enter detected in title");
-            // TODO: hmm what we should do here to move focus to the prosemirror editor is not actually obvious...
-            // I wonder if we can expose the view through a ref somehow and then focus via that? (idk if calling
-            // focus on the view is even the right approach ngl)
+            event.preventDefault();
+            editor.chain().focus().run();
         }
-    }, []);
+    }, [editor]);
 
     React.useEffect(() => {
         setZettel({title: "", content: []});
@@ -123,7 +121,7 @@ function ZettelEditor(props: { id: number }) {
             <CenteredContent>
                 { zettel ?
                     <Flex auto column>
-                        <Title defaultValue={zettel.title} placeholder="Add a title..." onChange={onChangeTitle} onKeyUp={onTitleKeyUp} />
+                        <Title defaultValue={zettel.title} placeholder="Add a title..." onChange={onChangeTitle} onKeyDown={onTitleKeyDown} />
                         <StyledEditorContent editor={editor} />
                         <FloatingMenu editor={editor}>
                             <button onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run() }>Table</button>
