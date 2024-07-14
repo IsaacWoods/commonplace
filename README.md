@@ -1,8 +1,9 @@
 # Commonplace
 WIP
 
-### Running
-- Use `cargo xtask dist` to build the frontend
+### Building and running
+- Use `just dist` to build the frontend for development
+- Use `just distprod` to build the frontend for production
 - Use `cargo run` to serve the application locally
 
 ### License
