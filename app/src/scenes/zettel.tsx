@@ -25,6 +25,9 @@ import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
 import TableRow from '@tiptap/extension-table-row';
 import Image from '@tiptap/extension-image';
+import Details from '@tiptap-pro/extension-details';
+import DetailsContent from '@tiptap-pro/extension-details-content';
+import DetailsSummary from '@tiptap-pro/extension-details-summary';
 
 function ZettelEditor(props: { id: number }) {
     const zettelContext = React.useContext(ZettelContext);
@@ -33,7 +36,14 @@ function ZettelEditor(props: { id: number }) {
     const editor = useEditor({
         extensions: [
             StarterKit,
-            Placeholder.configure({ placeholder: "Write something..." }),
+            // TODO: maybe configure for details summary too?
+            Placeholder.configure({ includeChildren: true, placeholder: ({ node }) => {
+                if (node.type.name === 'detailsSummary') {
+                    return "Summary";
+                }
+                // TODO: can we detect if it's the first child??
+                return "Write something..."
+            }}),
             ListKeymap,
             // TODO: for some reason `defaultProtocol` is not found... investigate maybe at some point
             Link.configure({ openOnClick: true, autolink: true }),
@@ -47,6 +57,9 @@ function ZettelEditor(props: { id: number }) {
             TableHeader,
             TableCell,
             Image,
+            Details.configure({ persist: true, HTMLAttributes: { class: 'details' }}),
+            DetailsContent,
+            DetailsSummary,
         ],
         content: '<p>Hello there!</p>',
 
@@ -115,6 +128,7 @@ function ZettelEditor(props: { id: number }) {
                         <FloatingMenu editor={editor}>
                             <button onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run() }>Table</button>
                             <button onClick={addImage}>Image</button>
+                            <button onClick={() => editor.chain().focus().setDetails().run() }>Details</button>
                         </FloatingMenu>
                         <BubbleMenu editor={editor}>
                             This is a bubble menu
@@ -283,6 +297,73 @@ const StyledEditorContent = styled(EditorContent)`
             color: black;
             font-size: 0.85rem;
             padding: 0.25em 0.3em;
+        }
+
+        .details {
+            display: flex;
+            gap: 0.25rem;
+            margin: 1.5rem 0;
+            border: 1px solid #d0d0d0;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+
+            summary {
+                font-weight: 700;
+
+                &::marker {
+                    content: "";
+                }
+            }
+
+            /* Summary placeholder */
+            .is-empty::before {
+                color: #adb5bd;
+                content: attr(data-placeholder);
+                float: left;
+                height: 0;
+                pointer-events: none;
+            }
+
+            > button {
+                align-items: center;
+                background: transparent;
+                border-radius: 4px;
+                display: flex;
+                font-size: 0.625rem;
+                width: 1.25rem;
+                height: 1.25rem;
+                justify-content: center;
+                line-height: 1;
+                margin-top: 0.1rem;
+                padding: 0;
+
+                &:hover {
+                    background-color: #d0d0d0;
+                }
+
+                &::before {
+                    content: '\\25B6';
+                }
+            }
+
+            &.is_open > button::before {
+                transform: rotate(90deg);
+            }
+
+            > div {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                width: 100%;
+
+                > [data-type="detailsContent"] > :last-child {
+                    margin-bottom: 0.5rem;
+                }
+            }
+
+            .details {
+                margin: 0.5rem 0;
+            }
         }
     }
 `;

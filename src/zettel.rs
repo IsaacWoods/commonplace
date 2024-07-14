@@ -105,6 +105,9 @@ pub enum Block {
     TableHeader { attrs: TableAttrs, content: Option<Vec<Block>> },
     TableCell { attrs: TableAttrs, content: Option<Vec<Block>> },
     Image { attrs: ImageAttrs },
+    Details { attrs: DetailsAttrs, content: Option<Vec<Block>> },
+    DetailsSummary { content: Option<Vec<Inline>> },
+    DetailsContent { content: Option<Vec<Block>> },
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -134,6 +137,11 @@ pub struct ImageAttrs {
     src: String,
     alt: Option<String>,
     title: Option<String>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct DetailsAttrs {
+    pub open: bool,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
