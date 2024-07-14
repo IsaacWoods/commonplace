@@ -299,6 +299,22 @@ const StyledEditorContent = styled(EditorContent)`
             padding: 0.25em 0.3em;
         }
 
+        pre {
+            background: black;
+            border-radius: 0.5rem;
+            color: white;
+            font-family: 'JetBrainsMono', monospace;
+            margin: 1.5rem 0;
+            padding: 0.75rem 1rem;
+
+            code {
+                background: none;
+                color: inherit;
+                font-size: 0.8rem;
+                padding: 0;
+            }
+        }
+
         .details {
             display: flex;
             gap: 0.25rem;
