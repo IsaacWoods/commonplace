@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { NavLink, useParams } from 'react-router-dom';
+import { Link as RouterLink, useParams } from 'react-router-dom';
 import Scene from '../components/scene';
 import Header, { Action } from '../components/header';
 import Button from '../components/button';
@@ -432,7 +432,7 @@ const ZettelLinkContent = (props: NodeViewRendererProps) => {
     // doesn't. Investigate why at some point maybe but this works for the time being.
     return (
         <NodeViewWrapper as="span" data-drag-handle>
-            <NavLink to={"/zettel/" + props.node.attrs.target} data-type="zettelLink" contentEditable={false}>{title}</NavLink>
+            <RouterLink to={"/zettel/" + props.node.attrs.target} data-type="zettelLink" contentEditable={false}>{title}</RouterLink>
         </NodeViewWrapper>
     );
 };
