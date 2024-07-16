@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import Scene from '../components/scene';
 import Header, { Action } from '../components/header';
 import Button from '../components/button';
@@ -10,7 +10,8 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { fetch_zettel, update_zettel, ZettelContext } from '../zettel';
 import { debounce } from 'lodash';
 
-import { EditorProvider, useEditor, EditorContent, FloatingMenu, BubbleMenu } from '@tiptap/react';
+import { Node, NodeViewRendererProps } from '@tiptap/core';
+import { EditorProvider, useEditor, EditorContent, FloatingMenu, BubbleMenu, ReactNodeViewRenderer, NodeViewWrapper, ReactNodeViewRendererOptions } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import ListKeymap from '@tiptap/extension-list-keymap';
@@ -36,12 +37,13 @@ function ZettelEditor(props: { id: number }) {
     const editor = useEditor({
         extensions: [
             StarterKit,
-            // TODO: maybe configure for details summary too?
             Placeholder.configure({ includeChildren: true, placeholder: ({ node }) => {
                 if (node.type.name === 'detailsSummary') {
                     return "Summary";
                 }
-                // TODO: can we detect if it's the first child??
+
+                // This is a bit hacky, but we include a placeholder for all children and then hide
+                // it with CSS.
                 return "Write something..."
             }}),
             ListKeymap,
@@ -60,6 +62,7 @@ function ZettelEditor(props: { id: number }) {
             Details.configure({ persist: true, HTMLAttributes: { class: 'details' }}),
             DetailsContent,
             DetailsSummary,
+            ZettelLink,
         ],
         content: '<p>Hello there!</p>',
 
@@ -379,5 +382,79 @@ const StyledEditorContent = styled(EditorContent)`
                 margin: 0.5rem 0;
             }
         }
+
+        a[data-type="zettelLink"] {
+            background: #d0d0d0;
+            border-radius: 4px;
+        }
     }
 `;
+
+declare module '@tiptap/core' {
+    interface Commands<ReturnType> {
+        zettelLinkNode: {
+            insertZettelLink: () => ReturnType
+        }
+    }
+};
+
+const ZettelLinkContent = (props: NodeViewRendererProps) => {
+    const zettelContext = React.useContext(ZettelContext);
+    const [title, setTitle] = React.useState("[unknown title]");
+
+    React.useEffect(() => {
+        const got_title = zettelContext.state.titles.get(props.node.attrs.target);
+        setTitle(got_title);
+    }, [props.node.attrs.target]);
+
+    // TODO: `NodeViewWrapper` should automatically become a `span` as the node is inline but it
+    // doesn't. Investigate why at some point maybe but this works for the time being.
+    return (
+        <NodeViewWrapper as="span" data-drag-handle>
+            <NavLink to={"/zettel/" + props.node.attrs.target} data-type="zettelLink" contentEditable={false}>{title}</NavLink>
+        </NodeViewWrapper>
+    );
+};
+
+const ZettelLink = Node.create({
+    name: 'zettelLink',
+    group: 'inline',
+    inline: true,
+    selectable: false,
+    atom: true,
+    draggable: true,
+
+    parseHTML() {
+        return [
+            {
+                tag: 'a[data-type="zettelLink"]',
+            }
+        ];
+    },
+
+    renderHTML({ HTMLAttributes }) {
+        return ['a', { ...HTMLAttributes, 'data-type': 'zettelLink' }];
+    },
+
+    addAttributes() {
+        return {
+            target: {
+                default: 120240713220509,
+                parseHTML: element => element.getAttribute('data-target'),
+                renderHTML: attribs => { return { 'data-target': attribs.target }; },
+            }
+        };
+    },
+
+    addNodeView() {
+        return ReactNodeViewRenderer(ZettelLinkContent);
+    },
+
+    addCommands() {
+        return {
+            insertZettelLink: () => ({ commands }) => {
+                return commands.insertContent({ type: this.name });
+            }
+        }
+    },
+});
