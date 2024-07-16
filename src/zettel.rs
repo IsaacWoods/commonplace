@@ -148,6 +148,12 @@ pub struct DetailsAttrs {
 #[serde(tag = "type", rename_all = "camelCase")]
 pub enum Inline {
     Text { text: String, marks: Option<Vec<Mark>> },
+    ZettelLink { attrs: ZettelLinkAttrs },
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ZettelLinkAttrs {
+    pub target: u64,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
