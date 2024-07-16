@@ -386,7 +386,9 @@ const StyledEditorContent = styled(EditorContent)`
 
         a[data-type="zettelLink"] {
             background: #d0d0d0;
-            border-radius: 4px;
+            border-radius: 0.4rem;
+            box-decoration-break: slice;
+            padding: 0.05rem 0.2rem;
         }
     }
 `;
