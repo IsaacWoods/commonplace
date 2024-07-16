@@ -127,9 +127,10 @@ function ZettelEditor(props: { id: number }) {
                         <Title defaultValue={zettel.title} placeholder="Add a title..." onChange={onChangeTitle} onKeyDown={onTitleKeyDown} />
                         <StyledEditorContent editor={editor} />
                         <FloatingMenu editor={editor}>
-                            <button onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run() }>Table</button>
-                            <button onClick={addImage}>Image</button>
-                            <button onClick={() => editor.chain().focus().setDetails().run() }>Details</button>
+                            <MenuButton onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run() }>Table</MenuButton>
+                            <MenuButton onClick={addImage}>Image</MenuButton>
+                            <MenuButton onClick={() => editor.chain().focus().setDetails().run() }>Details</MenuButton>
+                            <MenuButton onClick={() => editor.chain().focus().insertZettelLink().run() }>Zettel Link</MenuButton>
                         </FloatingMenu>
                         <BubbleMenu editor={editor}>
                             This is a bubble menu
@@ -387,6 +388,24 @@ const StyledEditorContent = styled(EditorContent)`
             background: #d0d0d0;
             border-radius: 4px;
         }
+    }
+`;
+
+const MenuButton = styled.button`
+    outline: none;
+    border: none;
+    border-radius: 3px;
+    padding: 4px 8px;
+    margin: 0 4px;
+
+    cursor: pointer;
+
+    color: ${props => props.theme.text};
+    background-color: ${props => props.theme.buttonBackground};
+
+    &:hover {
+        background-color: ${props => props.theme.buttonSelected};
+        transition: background-color 100ms ease-in-out;
     }
 `;
 
