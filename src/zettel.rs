@@ -2,7 +2,6 @@ use crate::AppState;
 use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
-    response::IntoResponse,
     Json,
 };
 use commonplace::ZettelId;
@@ -44,8 +43,17 @@ pub async fn list(State(state): State<Arc<AppState>>) -> Result<Json<Vec<QueryRe
     Ok(Json(all))
 }
 
-pub async fn search(State(state): State<Arc<AppState>>, Query(query): Query<String>) -> impl IntoResponse {
-    todo!()
+#[derive(Clone, Debug, Deserialize)]
+pub struct SearchParams {
+    query: String,
+}
+
+pub async fn search(
+    State(state): State<Arc<AppState>>,
+    Query(params): Query<SearchParams>,
+) -> Result<Json<Vec<ZettelId>>, StatusCode> {
+    let result = state.index.search(&params.query);
+    Ok(Json(result))
 }
 
 pub async fn update(
@@ -53,10 +61,11 @@ pub async fn update(
     Path(id): Path<ZettelId>,
     update: String,
 ) -> Result<(), StatusCode> {
-    info!("Update for path: {:?}, update = {:#?}", id, update);
-
     match serde_json::from_str(&update) {
-        Ok(update) => state.store.update(id, update),
+        Ok(update) => {
+            state.store.update(id, update);
+            state.index.update_zettel(id, &state.store.get(id).unwrap());
+        }
         Err(err) => error!("Error parsing Zettel update: {:?}", err),
     }
 
@@ -85,6 +94,20 @@ impl ZettelContent {
     pub fn empty() -> ZettelContent {
         Self::Doc { content: Vec::new() }
     }
+
+    pub fn index(&self) -> String {
+        let mut result = String::new();
+
+        match self {
+            Self::Doc { content } => {
+                for block in content {
+                    block.append_indexed(&mut result);
+                }
+            }
+        }
+
+        result
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -108,6 +131,127 @@ pub enum Block {
     Details { attrs: DetailsAttrs, content: Option<Vec<Block>> },
     DetailsSummary { content: Option<Vec<Inline>> },
     DetailsContent { content: Option<Vec<Block>> },
+}
+
+impl Block {
+    fn append_indexed(&self, s: &mut String) {
+        match self {
+            Block::Paragraph { content } => {
+                if let Some(content) = content {
+                    for inline in content {
+                        inline.append_indexed(s);
+                    }
+                }
+            }
+            Block::Blockquote { content } => {
+                if let Some(content) = content {
+                    for block in content {
+                        block.append_indexed(s);
+                    }
+                }
+            }
+            Block::BulletList { content } => {
+                if let Some(content) = content {
+                    for block in content {
+                        block.append_indexed(s);
+                    }
+                }
+            }
+            Block::CodeBlock { content, .. } => {
+                if let Some(content) = content {
+                    for inline in content {
+                        inline.append_indexed(s);
+                    }
+                }
+            }
+            Block::Heading { content, .. } => {
+                if let Some(content) = content {
+                    for inline in content {
+                        inline.append_indexed(s);
+                    }
+                }
+            }
+            Block::HorizontalRule => (),
+            Block::ListItem { content } => {
+                if let Some(content) = content {
+                    for block in content {
+                        block.append_indexed(s);
+                    }
+                }
+            }
+            Block::OrderedList { content } => {
+                if let Some(content) = content {
+                    for block in content {
+                        block.append_indexed(s);
+                    }
+                }
+            }
+            Block::TaskList { content } => {
+                if let Some(content) = content {
+                    for block in content {
+                        block.append_indexed(s);
+                    }
+                }
+            }
+            Block::TaskItem { content, .. } => {
+                if let Some(content) = content {
+                    for block in content {
+                        block.append_indexed(s);
+                    }
+                }
+            }
+            Block::Table { content } => {
+                if let Some(content) = content {
+                    for block in content {
+                        block.append_indexed(s);
+                    }
+                }
+            }
+            Block::TableRow { content } => {
+                if let Some(content) = content {
+                    for block in content {
+                        block.append_indexed(s);
+                    }
+                }
+            }
+            Block::TableHeader { content, .. } => {
+                if let Some(content) = content {
+                    for block in content {
+                        block.append_indexed(s);
+                    }
+                }
+            }
+            Block::TableCell { content, .. } => {
+                if let Some(content) = content {
+                    for block in content {
+                        block.append_indexed(s);
+                    }
+                }
+            }
+            Block::Image { .. } => (),
+            Block::Details { content, .. } => {
+                if let Some(content) = content {
+                    for block in content {
+                        block.append_indexed(s);
+                    }
+                }
+            }
+            Block::DetailsSummary { content } => {
+                if let Some(content) = content {
+                    for inline in content {
+                        inline.append_indexed(s);
+                    }
+                }
+            }
+            Block::DetailsContent { content } => {
+                if let Some(content) = content {
+                    for block in content {
+                        block.append_indexed(s);
+                    }
+                }
+            }
+        }
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -149,6 +293,18 @@ pub struct DetailsAttrs {
 pub enum Inline {
     Text { text: String, marks: Option<Vec<Mark>> },
     ZettelLink { attrs: ZettelLinkAttrs },
+}
+
+impl Inline {
+    fn append_indexed(&self, s: &mut String) {
+        match self {
+            Inline::Text { text, .. } => {
+                s.push_str(text);
+                s.push(' ');
+            }
+            Inline::ZettelLink { .. } => (),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

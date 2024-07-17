@@ -5,7 +5,6 @@ use std::{convert::TryInto, ops::Deref};
 
 pub struct ZettelStore {
     tree: sled::Tree,
-    // index: Arc<Index>,
 }
 
 impl ZettelStore {
@@ -48,10 +47,6 @@ impl ZettelStore {
             })
             .collect()
     }
-
-    // pub fn search(&self, query: &str) -> Vec<ZettelId> {
-    //     self.index.search(query)
-    // }
 
     pub fn update(&self, id: ZettelId, update: ZettelUpdate) {
         self.tree
