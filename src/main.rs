@@ -7,6 +7,7 @@ use axum::{
     routing::{get, post},
     Router,
 };
+use index::Index;
 use std::sync::Arc;
 use store::ZettelStore;
 use tower_http::{
@@ -17,6 +18,7 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 struct AppState {
     store: ZettelStore,
+    index: Arc<Index>,
 }
 
 #[tokio::main]
@@ -26,13 +28,16 @@ pub async fn main() {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    let state = Arc::new(AppState { store: ZettelStore::new() });
+    let index = Index::new();
+    tokio::spawn(index::commit_index(index.clone()));
+
+    let state = Arc::new(AppState { store: ZettelStore::new(), index });
 
     let api_routes = Router::new()
         .route("/zettel.create", post(zettel::create))
         .route("/zettel.fetch/:id", get(zettel::fetch))
         .route("/zettel.list", get(zettel::list))
-        .route("/zettel.search?query", get(zettel::search))
+        .route("/zettel.search", get(zettel::search))
         .route("/zettel.update/:id", post(zettel::update))
         .fallback(api_fallback);
 
