@@ -139,9 +139,9 @@ function ZettelEditor(props: { id: number }) {
                             <MenuButton onClick={() => editor.chain().focus().setDetails().run() }>Details</MenuButton>
                             <MenuButton onClick={addZettelLink}>Zettel Link</MenuButton>
                         </FloatingMenu>
-                        <BubbleMenu editor={editor}>
+                        {/*<BubbleMenu editor={editor}>
                             This is a bubble menu
-                        </BubbleMenu>
+                        </BubbleMenu>*/}
                     </Flex>
                 : <></>}
             </CenteredContent>
