@@ -1,49 +1,17 @@
-FROM --platform=$BUILDPLATFORM rustlang/rust:nightly as chef
+FROM docker.io/rustlang/rust:nightly as chef
     RUN cargo install cargo-chef
-    # Move source dependencies over
-    COPY commonplace commonplace
-    WORKDIR server
 
-FROM --platform=$BUILDPLATFORM chef as server_planner
-    COPY server/ .
-    COPY server/.cargo ./.cargo
+FROM chef as server_planner
+    COPY . .
     RUN cargo chef prepare --recipe-path recipe.json
 
-FROM --platform=$BUILDPLATFORM chef as server_builder
-    COPY --from=server_planner /server/recipe.json recipe.json
-    COPY server/.cargo ./.cargo
-    # Install the target
-    ARG TARGETPLATFORM
-    RUN case "${TARGETPLATFORM}" in \
-            "linux/amd64")  TARGET=x86_64-unknown-linux-musl ;; \
-            "linux/arm64")  TARGET=aarch64-unknown-linux-musl ;; \
-            *) exit 69 ;; \
-        esac; \
-        rustup target add $TARGET
-    RUN apt-get update -y
-    RUN apt-get install -y lld
-    # Cache the dependencies
-    RUN case "${TARGETPLATFORM}" in \
-            "linux/amd64")  TARGET=x86_64-unknown-linux-musl ;; \
-            "linux/arm64")  TARGET=aarch64-unknown-linux-musl ;; \
-            *) exit 69 ;; \
-        esac; \
-        cargo chef cook --release --target $TARGET --recipe-path recipe.json
-    # Actually build
-    COPY server/ .
-    RUN case "${TARGETPLATFORM}" in \
-            "linux/amd64")  TARGET=x86_64-unknown-linux-musl ;; \
-            "linux/arm64")  TARGET=aarch64-unknown-linux-musl ;; \
-            *) exit 69 ;; \
-        esac; \
-        cargo build --release --target $TARGET --bin server
-    # Install to avoid needing to specify the target in the runtime container
-    RUN case "${TARGETPLATFORM}" in \
-            "linux/amd64")  TARGET=x86_64-unknown-linux-musl ;; \
-            "linux/arm64")  TARGET=aarch64-unknown-linux-musl ;; \
-            *) exit 69 ;; \
-        esac; \
-        cargo install --target $TARGET --path .
+FROM chef as server_builder
+    COPY --from=server_planner recipe.json recipe.json
+    # Cache built dependencies in a separate layer
+    RUN cargo chef cook --release --recipe-path recipe.json
+    COPY . .
+    ENV COMMONPLACE_DIST_DIR="/dist/"
+    RUN cargo build --release
 
 FROM --platform=$BUILDPLATFORM node as app_builder
     WORKDIR app
@@ -51,15 +19,15 @@ FROM --platform=$BUILDPLATFORM node as app_builder
     COPY app/package-lock.json package-lock.json
     COPY app/src/ ./src/
     COPY app/webpack.common.js app/webpack.production.js app/tsconfig.json ./
+    ARG TIPTAP_PRO_TOKEN
+    RUN npm config set "@tiptap-pro:registry" https://registry.tiptap.dev/ && npm config set "//registry.tiptap.dev/:_authToken" ${TIPTAP_PRO_TOKEN}
     RUN npm install -D webpack webpack-cli
     RUN npx webpack --config webpack.production.js
 
-FROM alpine:latest
-    COPY --from=server_builder /usr/local/cargo/bin/server /usr/local/bin/server
+FROM debian:bookworm-slim
+    COPY --from=server_builder /target/release/commonplace /usr/local/bin/commonplace
     COPY --from=app_builder app/dist/ /dist/
-    ENV ROCKET_ADDRESS="0.0.0.0"
-    ENV ROCKET_DIST_DIR="/dist/"
     EXPOSE 8000
     VOLUME /db
     VOLUME /index
-    CMD ["server"]
+    CMD ["commonplace"]

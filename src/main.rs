@@ -45,11 +45,11 @@ pub async fn main() {
      * The main router for the app. We serve static files and route API calls, then fallback to the
      * index page to allow client-side routing to work properly.
      */
-    // TODO: allow custom specification of the dist directory for Docker etc.
+    let dist_dir = option_env!("COMMONPLACE_DIST_DIR").unwrap_or("app/dist/");
     let app = Router::new()
-        .nest_service("/static", ServeDir::new("app/dist"))
+        .nest_service("/static", ServeDir::new(dist_dir))
         .nest("/api", api_routes)
-        .fallback_service(ServeFile::new("app/dist/index.html"))
+        .fallback_service(ServeFile::new(format!("{}/index.html", dist_dir)))
         .with_state(state)
         .layer(TraceLayer::new_for_http());
 
