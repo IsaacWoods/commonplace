@@ -56,9 +56,6 @@ impl ZettelStore {
                 zettel.title = update.title.clone();
                 zettel.content = update.content.clone();
 
-                // TODO: update the index when it exists again
-                // self.index.update_zettel(id, &zettel);
-
                 Some(zettel.serialize())
             })
             .unwrap();
