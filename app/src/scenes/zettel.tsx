@@ -118,6 +118,13 @@ function ZettelEditor(props: { id: number }) {
         }
     }, [editor]);
 
+    const addZettelLink = React.useCallback(() => {
+        const id = window.prompt('ID of target');
+        if (id) {
+            editor.chain().focus().insertZettelLink(Number(id)).run();
+        }
+    }, [editor]);
+
     return (
         <>
             <Header title={zettel ? zettel.title : "Loading Zettel..."} />
@@ -130,7 +137,7 @@ function ZettelEditor(props: { id: number }) {
                             <MenuButton onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run() }>Table</MenuButton>
                             <MenuButton onClick={addImage}>Image</MenuButton>
                             <MenuButton onClick={() => editor.chain().focus().setDetails().run() }>Details</MenuButton>
-                            <MenuButton onClick={() => editor.chain().focus().insertZettelLink().run() }>Zettel Link</MenuButton>
+                            <MenuButton onClick={addZettelLink}>Zettel Link</MenuButton>
                         </FloatingMenu>
                         <BubbleMenu editor={editor}>
                             This is a bubble menu
@@ -414,7 +421,7 @@ const MenuButton = styled.button`
 declare module '@tiptap/core' {
     interface Commands<ReturnType> {
         zettelLinkNode: {
-            insertZettelLink: () => ReturnType
+            insertZettelLink: (id) => ReturnType
         }
     }
 };
@@ -460,7 +467,7 @@ const ZettelLink = Node.create({
     addAttributes() {
         return {
             target: {
-                default: 120240713220509,
+                default: 0,
                 parseHTML: element => element.getAttribute('data-target'),
                 renderHTML: attribs => { return { 'data-target': attribs.target }; },
             }
@@ -473,8 +480,8 @@ const ZettelLink = Node.create({
 
     addCommands() {
         return {
-            insertZettelLink: () => ({ commands }) => {
-                return commands.insertContent({ type: this.name });
+            insertZettelLink: (id) => ({ commands }) => {
+                return commands.insertContent({ type: this.name, attrs: { target: id } });
             }
         }
     },
