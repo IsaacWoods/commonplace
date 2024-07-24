@@ -6,7 +6,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ZettelContextProvider } from './zettel';
 
 import Home from './scenes/home';
-import Search from './scenes/search';
 import Zettel from './scenes/zettel';
 
 const App = () => (
@@ -16,7 +15,6 @@ const App = () => (
             <Router>
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/search" element={<Search />} />
                     <Route path="/zettel/:id" element={<Zettel />} />
                 </Routes>
             </Router>

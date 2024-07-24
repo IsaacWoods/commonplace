@@ -2,7 +2,6 @@ import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import Flex from './flex';
-// import { list_zettels, Zettel, ZettelResult, ZettelContext} from '../zettel';
 import { list_zettels, ZettelContext } from '../zettel';
 
 export default function Sidebar() {
@@ -24,7 +23,6 @@ export default function Sidebar() {
         <Container column>
             <Section>
                 <Link end to="/">Home</Link>
-                <Link to="/search">Search</Link>
             </Section>
 
             <Section>
