@@ -4,6 +4,7 @@ import { throttle } from 'lodash';
 import { transparentize } from 'polished';
 import Flex from './flex';
 import Fade from './fade';
+import Icon from './icon';
 
 type Props = {
     title: React.ReactNode,
@@ -26,6 +27,7 @@ export default function Header(props: Props) {
 
     return (
         <Wrapper align="center" shrinkIntoCorner={isScrolled}>
+            {isScrolled ? (<div />) : <Icon justify="flex-start" /> }
             {isScrolled ? (<Fade><Title onClick={onClickTitle}>{props.title}</Title></Fade>) : (<div />)}
             {props.actions && (
                 <Actions align="center" justify="flex-end">
