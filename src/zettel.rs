@@ -7,7 +7,7 @@ use axum::{
 use commonplace::ZettelId;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
-use tracing::{error, info};
+use tracing::error;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct QueryResult {
