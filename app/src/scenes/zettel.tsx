@@ -7,6 +7,7 @@ import Button from '../components/button';
 import CenteredContent from '../components/centered';
 import Flex from '../components/flex';
 import TextareaAutosize from 'react-textarea-autosize';
+import NewZettelButton from '../components/new_zettel_button';
 import { fetch_zettel, update_zettel, ZettelContext } from '../zettel';
 import { debounce } from 'lodash';
 
@@ -127,7 +128,9 @@ function ZettelEditor(props: { id: number }) {
 
     return (
         <>
-            <Header title={zettel ? zettel.title : "Loading Zettel..."} />
+            <Header title={zettel ? zettel.title : "Loading Zettel..."} actions={
+                <Action><NewZettelButton /></Action>
+            }/>
             <CenteredContent>
                 { zettel ?
                     <Flex auto column>
