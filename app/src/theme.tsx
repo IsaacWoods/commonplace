@@ -12,9 +12,6 @@ export const theme = {
     fontFamily: "-apple-system, sans-serif",
     fontFamilyMono: "monospace",
 
-    sidebarWidth: 240,
-    sidebarColor: "rgb(247, 246, 243)",
-
     insertMenuBackground: "#ffffff",
     insertMenuSelected: "rgb(220, 225, 230)",
 

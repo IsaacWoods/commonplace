@@ -18,12 +18,9 @@ export default function Scene(props: Props) {
                 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
             </Helmet>
             <Container auto>
-                <Sidebar />
-                <Content auto justify="center">
-                    <Fullwidth>
-                        {props.children}
-                    </Fullwidth>
-                </Content>
+                <Fullwidth>
+                    {props.children}
+                </Fullwidth>
             </Container>
         </Container>
     );
@@ -34,10 +31,6 @@ const Container = styled(Flex)`
     position: relative;
     width: 100%;
     min-height: 100%;
-`;
-
-const Content = styled(Flex)`
-    margin-left: ${props => props.theme.sidebarWidth}px;
 `;
 
 const Fullwidth = styled.div`
