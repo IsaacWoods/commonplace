@@ -126,6 +126,22 @@ function ZettelEditor(props: { id: number }) {
         }
     }, [editor]);
 
+    const shouldShowFloatingMenu = ({ editor, view, state, oldState }) => {
+        const { selection } = state;
+        const { $anchor, empty } = selection;
+        const isRootDepth = $anchor.depth === 1;
+        const isEmptyTextBlock = $anchor.parent.isTextblock && !$anchor.parent.type.spec.code && !$anchor.parent.textContent;
+
+        // This differs from the default one in that we don't check the depth, allowing the menu to
+        // appear in non-root nodes (e.g. list items). We might want to be more specific about where
+        // idk.
+        if (!view.hasFocus() || !empty || !isEmptyTextBlock || !editor.isEditable) {
+            return false;
+        }
+
+        return true;
+    };
+
     return (
         <>
             <Header title={zettel ? zettel.title : "Loading Zettel..."} actions={
@@ -136,7 +152,7 @@ function ZettelEditor(props: { id: number }) {
                     <Flex auto column>
                         <Title defaultValue={zettel.title} placeholder="Add a title..." onChange={onChangeTitle} onKeyDown={onTitleKeyDown} />
                         <StyledEditorContent editor={editor} />
-                        <FloatingMenu editor={editor}>
+                        <FloatingMenu editor={editor} shouldShow={shouldShowFloatingMenu}>
                             <MenuButton onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run() }>Table</MenuButton>
                             <MenuButton onClick={addImage}>Image</MenuButton>
                             <MenuButton onClick={() => editor.chain().focus().setDetails().run() }>Details</MenuButton>
@@ -203,7 +219,7 @@ const StyledEditorContent = styled(EditorContent)`
             padding-left: 1rem;
         }
 
-        :first-child {
+        .tiptap :first-child {
             margin-top: 0;
         }
 
